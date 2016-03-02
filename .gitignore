@@ -49,6 +49,6 @@ Temporary Items
 #Unreal Ignored Folders -Clint
 Build/*
 Binaries/*
-Intermediate/*
 DerivedDataCache/*
 Saved/*
+Intermediate/*
