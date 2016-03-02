@@ -57,7 +57,6 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Inventory)
 			TArray<FInventoryItemStruct> InventoryArray;
 
-		
 
 		//Drops the item
 		UFUNCTION(BlueprintCallable, Category = Inventory)
@@ -85,7 +84,7 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		UFUNCTION(BlueprintCallable, Category = Inventory)
 			void UpdateInventory();
 		
-		/* GRID MOVEMENT*/
+		/*   GRID MOVEMENT   */
 		UFUNCTION(BlueprintCallable, Category =GridMovement)
 			void MoveToPosition(int32 CurrentPosition, int32 Destination);
 
@@ -102,20 +101,34 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 	public:
 		AParentCombatCharacter();
 
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
-			bool bInMovement = false;
-
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Spawning)
 			FVector StartingSpawnLocation;
 
+		
+
+		//Variables for Movement
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
+			int32 ForLoopVariable;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
+			float Speed;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
+			float heightoffset;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
+			FVector InitialLocation;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
 			bool bUseDiagonals = true;
-
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
-			float X_Direction =0;
-
+			float X_Direction = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
 			TArray<int32> PathwayPoints;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
+			bool bInMovement = false;
+
+		//Sprite Rotation Variables
+		//FOR RIGHT FACING SPRITE. Set these once Blueprint is created.
+		FRotator MoveRightRotation = FRotator(0, 0, -45);
+		FRotator MoveLeftRotation = FRotator(0, 180, 45);
+
 
 		ACombatGrid* CombatGrid;
 
@@ -133,4 +146,9 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		//Adds the item to the inventory given its FInventoryItemStruct or "data"
 		UFUNCTION(BlueprintCallable, Category = Inventory)
 			void GiveItem(FInventoryItemStruct Item);
+
+
+		/*   COMBAT   */
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+			int32 NumberOfAttacksRemaining = 1;
 };

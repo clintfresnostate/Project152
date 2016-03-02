@@ -102,16 +102,6 @@ void AParentCombatCharacter::Tick(float DeltaSeconds)
 	
 	//UpdateCharacter(); OVERRIDDEN
 	//The Following Code Sets the rotation when the actor moves left or right
-	
-	//FOR MOOSE
-	/*
-	FRotator MoveRightRotation = FRotator(0, 180, 45);
-	FRotator MoveLeftRotation = FRotator(0, 0, -45);
-	*/
-
-	//FOR RIGHT FACING SPRITE
-	FRotator MoveRightRotation = FRotator(0, 0, -45);
-	FRotator MoveLeftRotation = FRotator(0, 180, 45);
 
 	if (bInMovement)
 	{
@@ -123,7 +113,6 @@ void AParentCombatCharacter::Tick(float DeltaSeconds)
 		}
 		if (X_Direction < 0.0f)
 		{
-			SetActorRotation(MoveLeftRotation);
 			GetSprite()->SetWorldRotation(MoveLeftRotation);
 		}
 	}
