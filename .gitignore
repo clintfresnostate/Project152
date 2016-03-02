@@ -46,8 +46,9 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-
-.DerivedDataCache
-.Intermediate
-.Saved
-.Binaries
+#Unreal Ignored Folders -Clint
+Build/*
+Binaries/*
+Intermediate/*
+DerivedDataCache/*
+Saved/*
