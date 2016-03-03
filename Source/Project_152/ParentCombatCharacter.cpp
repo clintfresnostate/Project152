@@ -102,23 +102,38 @@ void AParentCombatCharacter::Tick(float DeltaSeconds)
 	
 	//UpdateCharacter(); OVERRIDDEN
 	//The Following Code Sets the rotation when the actor moves left or right
-
-	if (bInMovement)
+	if (bEnableUpdate)
 	{
-		GetSprite()->SetFlipbook(RunningAnimation);
+		if (bInMovement)
+		{
+			if (Y_Direction > 0.0f)
+			{
+				GetSprite()->SetFlipbook(DownAnimation);
+			}
+			if (Y_Direction < 0.0f)
+			{
+				GetSprite()->SetFlipbook(UpAnimation);
+			}
 
-		if (X_Direction > 0.0f)
-		{
-			GetSprite()->SetWorldRotation(MoveRightRotation);
+			if (X_Direction > 0.0f)
+			{
+				GetSprite()->SetWorldRotation(MoveRightRotation);
+				GetSprite()->SetFlipbook(RunningAnimation);
+			}
+			if (X_Direction < 0.0f)
+			{
+				GetSprite()->SetWorldRotation(MoveLeftRotation);
+				GetSprite()->SetFlipbook(RunningAnimation);
+			}
 		}
-		if (X_Direction < 0.0f)
+		if (!bInMovement & !bIsAttacking)
 		{
-			GetSprite()->SetWorldRotation(MoveLeftRotation);
+			GetSprite()->SetFlipbook(IdleAnimation);
 		}
 	}
-	else
+	if (bIsAttacking)
 	{
-		GetSprite()->SetFlipbook(IdleAnimation);
+		GetSprite()->SetFlipbook(AttackAnimation);
 	}
 }
 
@@ -234,7 +249,7 @@ void AParentCombatCharacter::MoveToPosition(int32 CurrentPosition, int32 Destina
 		if (bInMovement == false)
 		{
 			//Calling Dummy Function to allow BP to handle the Timeline
-			MoveToGridEvent(CurrentPosition, Destination);
+			MoveToGridEvent();
 
 			bInMovement = true;
 		}
@@ -353,9 +368,32 @@ int32 AParentCombatCharacter::GetGridNum(FVector TargetVector, TArray<FVector> W
 
 
 //Dummy Events used to interface with Blueprints
-void AParentCombatCharacter::MoveToGridEvent_Implementation(int32 GridIn, int32 GridOut)
+void AParentCombatCharacter::MoveToGridEvent_Implementation()
 {
 	
 }
 
-
+//Make the character face a certain direction
+//Updates are disabled so that the facing direction is not changed. Remember to Re-enable.
+void AParentCombatCharacter::FaceRight()
+{
+	bEnableUpdate = false;
+	GetSprite()->SetFlipbook(IdleAnimation);
+	GetSprite()->SetWorldRotation(MoveRightRotation);
+}
+void AParentCombatCharacter::FaceDown()
+{
+	bEnableUpdate = false;
+	GetSprite()->SetFlipbook(DownIdleAnimation);
+}
+void AParentCombatCharacter::FaceLeft()
+{
+	bEnableUpdate = false;
+	GetSprite()->SetFlipbook(IdleAnimation);
+	GetSprite()->SetWorldRotation(MoveLeftRotation);
+}
+void AParentCombatCharacter::FaceUp()
+{
+	bEnableUpdate = false;
+	GetSprite()->SetFlipbook(UpIdleAnimation);
+}

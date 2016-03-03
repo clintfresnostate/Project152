@@ -40,6 +40,21 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
 		class UPaperFlipbook* IdleAnimation;
 
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+		class UPaperFlipbook* DownAnimation;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+		class UPaperFlipbook* AttackAnimation;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+		class UPaperFlipbook* DownIdleAnimation;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+		class UPaperFlipbook* UpAnimation;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animations)
+		class UPaperFlipbook* UpIdleAnimation;
+
 		/** Called to choose the correct animation to play based on the character's movement state */
 		void UpdateAnimation();
 
@@ -120,9 +135,13 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
 			float X_Direction = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
+			float Y_Direction = 0;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
 			TArray<int32> PathwayPoints;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
 			bool bInMovement = false;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
+			bool bEnableUpdate = true;
 
 		//Sprite Rotation Variables
 		//FOR RIGHT FACING SPRITE. Set these once Blueprint is created.
@@ -140,7 +159,7 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			TArray<FVector> WorldGridRef;
 
 		UFUNCTION(BlueprintNativeEvent, Category = GridMovement)
-			void MoveToGridEvent(int32 InputGridNum, int32 OutputGridNum);
+			void MoveToGridEvent();
 
 
 		//Adds the item to the inventory given its FInventoryItemStruct or "data"
@@ -151,4 +170,15 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		/*   COMBAT   */
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 			int32 NumberOfAttacksRemaining = 1;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+			bool bIsAttacking = false;
+
+		UFUNCTION(BlueprintCallable, Category = GridMovement)
+			void FaceRight();
+		UFUNCTION(BlueprintCallable, Category = GridMovement)
+			void FaceDown();
+		UFUNCTION(BlueprintCallable, Category = GridMovement)
+			void FaceLeft();
+		UFUNCTION(BlueprintCallable, Category = GridMovement)
+			void FaceUp();
 };

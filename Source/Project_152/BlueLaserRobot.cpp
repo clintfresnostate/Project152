@@ -2,6 +2,7 @@
 
 #include "Project_152.h"
 #include "BlueLaserRobot.h"
+#include "ParentCombatCharacter.h"
 
 void ABlueLaserRobot::AttackWithLaser(FVector SourceLocation, FVector TargetLocation)
 {
@@ -15,6 +16,7 @@ void ABlueLaserRobot::AttackWithLaser(FVector SourceLocation, FVector TargetLoca
 	{
 		//Call BlueprintNative Event in order to setup the animation
 		AttackWithLaserEvent();
+		bIsAttacking = true;
 	}
 
 }
