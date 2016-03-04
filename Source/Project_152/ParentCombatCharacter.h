@@ -142,6 +142,15 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			bool bInMovement = false;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
 			bool bEnableUpdate = true;
+		//Grid Movement
+		UFUNCTION(BlueprintCallable, Category = GridMovement)
+			void FaceRight();
+		UFUNCTION(BlueprintCallable, Category = GridMovement)
+			void FaceDown();
+		UFUNCTION(BlueprintCallable, Category = GridMovement)
+			void FaceLeft();
+		UFUNCTION(BlueprintCallable, Category = GridMovement)
+			void FaceUp();
 
 		//Sprite Rotation Variables
 		//FOR RIGHT FACING SPRITE. Set these once Blueprint is created.
@@ -171,14 +180,18 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 			int32 NumberOfAttacksRemaining = 1;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+			int32 NumberOfMovesRemaining = 1;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 			bool bIsAttacking = false;
+		UFUNCTION(BlueprintCallable, Category = Combat)
+			void TakeTurn();
+		
+	
 
-		UFUNCTION(BlueprintCallable, Category = GridMovement)
-			void FaceRight();
-		UFUNCTION(BlueprintCallable, Category = GridMovement)
-			void FaceDown();
-		UFUNCTION(BlueprintCallable, Category = GridMovement)
-			void FaceLeft();
-		UFUNCTION(BlueprintCallable, Category = GridMovement)
-			void FaceUp();
+
+		/*  STATS  */
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 SpeedStat;
+		//Used to grab the speed stat
+		int32 GetSpeedStat(void);
 };

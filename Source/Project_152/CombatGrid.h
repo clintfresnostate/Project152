@@ -1,9 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "GameFramework/Actor.h"
 #include "CombatGrid.generated.h"
+
+//Have to use forward declaration to avoid circular dependencies
+
 
 UCLASS()
 class PROJECT_152_API ACombatGrid : public AActor
@@ -41,6 +43,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridProperties)
 		int32 MaxY=10;
 
+	//Used to check if mouse trace is inbounds
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridProperties)
+		int32 NWCorner;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridProperties)
+		int32 SECorner;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridProperties)
+		bool bMouseIsOnGrid = false;
+
 	//Array of Vectors that INITIALLY holds the grid array without translation
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridProperties)
 		TArray<FVector> GridArray;
@@ -57,10 +67,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = GridProperties)
 		TArray<int32> GridType;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridProperties)
+		TArray<int32> SpawnPoints;
+
+
 	int32 GetMaxY(void);
 	int32 GetMaxX(void);
 
+
+
+
 	/*FUNCTIONS*/
+
 	//convert the corner loc to mid point of each tile. Returns the converted array
 	TArray<FVector> ConvertToMidPoints(TArray<FVector>);
 	//Convert relative grid loc to world location. Returns the converted array

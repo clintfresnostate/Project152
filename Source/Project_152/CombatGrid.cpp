@@ -3,7 +3,6 @@
 #include "Project_152.h"
 #include "CombatGrid.h"
 
-
 ACombatGrid::ACombatGrid()
 {
 	FVector();
@@ -128,26 +127,31 @@ int32 ACombatGrid::GetGridNum(FVector InputPosition)
 	//Vector Magnitude Variable to Find closest point
 	FVector VectorDifference;
 	FVector SmallestVectorMag;
-	//Initialize the Vectors
-	int32 index = 0;
+	//Initialize Index to be negative so we can check it later if its not on the grid
+	int32 index = -1;
+	bool bOutOfBounds=false;
 
+	if (bMouseIsOnGrid)
+	{
+		index = 0;
 		VectorDifference.X = WorldLocArray[0].X - InputPosition.X;
 		VectorDifference.Y = WorldLocArray[0].Y - InputPosition.Y;
-		float MagnitudeInit = FMath::Sqrt(FMath::Pow(VectorDifference.X, 2) + FMath::Pow(VectorDifference.Y, 2));
+		float MagnitudeInit = FMath::Sqrt(FMath::Pow(VectorDifference.X, 2) + FMath::Pow(VectorDifference.Y, 2));	
 
 		//For Each Loop. Getting the points closest to our vector by comparing their differences' magnitude
 		for (int i = 0; i < WorldLocArray.Num(); i++)
-		{
+		{				
 			VectorDifference.X = WorldLocArray[i].X - InputPosition.X;
 			VectorDifference.Y = WorldLocArray[i].Y - InputPosition.Y;
 
 			float Magnitude = FMath::Sqrt(FMath::Pow(VectorDifference.X, 2) + FMath::Pow(VectorDifference.Y, 2));
 			if (Magnitude < MagnitudeInit)
 			{
-				MagnitudeInit = Magnitude;
-				index = i;
+					MagnitudeInit = Magnitude;
+					index = i;
 			}
 		}
+	}
 	return index;
 
 }

@@ -82,6 +82,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = Inventory)
 		void UpdateInventory();
+
+	APlayerController* PlayerControllerRef;
+
 public:
 	AProject_152Character();
 
@@ -97,5 +100,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Inventory)
 		void SetWithinItemRadius(bool bIsInRadius, AInventoryItem* Item);
 
+	//Used to Check Whether or not to show the mouse
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		bool bMyTurnInCombat;
 
+	//Used to store the value of the mouse location via Grid Index
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		int32 CurrentMouseLocationIndex;
 };

@@ -397,3 +397,14 @@ void AParentCombatCharacter::FaceUp()
 	bEnableUpdate = false;
 	GetSprite()->SetFlipbook(UpIdleAnimation);
 }
+int32 AParentCombatCharacter::GetSpeedStat()
+{
+	return SpeedStat;
+}
+void AParentCombatCharacter::TakeTurn()
+{
+	//while ((NumberOfMovesRemaining > 0) & (NumberOfAttacksRemaining>0))
+	//{
+
+	//}
+}

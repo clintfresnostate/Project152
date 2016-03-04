@@ -88,6 +88,7 @@ AProject_152Character::AProject_152Character()
 	// Enable replication on the Sprite component so animations show up when networked
 	GetSprite()->SetIsReplicated(true);
 	bReplicates = true;
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -111,6 +112,19 @@ void AProject_152Character::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	
 	UpdateCharacter();	
+	PlayerControllerRef = GetWorld()->GetFirstPlayerController();
+	if (bMyTurnInCombat)
+	{
+		PlayerControllerRef->bShowMouseCursor = true;
+		PlayerControllerRef->bEnableClickEvents = true;
+		PlayerControllerRef->bEnableMouseOverEvents = true;
+	}
+	else
+	{
+		PlayerControllerRef->bShowMouseCursor = false;
+		PlayerControllerRef->bEnableClickEvents = false;
+		PlayerControllerRef->bEnableMouseOverEvents = false;
+	}
 }
 
 
