@@ -243,7 +243,7 @@ void AParentCombatCharacter::SetWithinItemRadius(bool bIsInRadius, AInventoryIte
 		bIsWithinItemRange = false; // 
 	}
 }
-void AParentCombatCharacter::MoveToPosition(int32 CurrentPosition, int32 Destination)
+void AParentCombatCharacter::MoveToPosition()
 {
 
 		if (bInMovement == false)
@@ -403,8 +403,18 @@ int32 AParentCombatCharacter::GetSpeedStat()
 }
 void AParentCombatCharacter::TakeTurn()
 {
-	//while ((NumberOfMovesRemaining > 0) & (NumberOfAttacksRemaining>0))
-	//{
-
-	//}
+	PathwayPoints.Empty();
+	while ((NumberOfMovesRemaining > 0) & (NumberOfAttacksRemaining>0))
+	{
+		if (bChooseMove)
+		{
+			if (NumberOfMovesRemaining>0)
+			//Get the chosen position from the player when they click
+			PathwayPoints.Add(MoveToChosenPosition);
+			MoveToPosition();
+			NumberOfMovesRemaining--;
+			NumberOfAttacksRemaining--;
+			bChooseMove = false;
+		}
+	}
 }

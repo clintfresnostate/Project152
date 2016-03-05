@@ -23,8 +23,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Combat)
 		void StartCombat(TArray<AParentCombatCharacter*> CharactersInCombat, ACombatGrid* GridRef);
 
-
+	virtual void Tick(float DeltaSeconds) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 		bool bInCombat = true;
+
+	//Set this when units are spawned. Keeps track of all the actors/characters in combat
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		TArray<AParentCombatCharacter*> CharactersInCombat;
+
+	void DoOnce();
+	bool bDo;
 };

@@ -101,7 +101,7 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		
 		/*   GRID MOVEMENT   */
 		UFUNCTION(BlueprintCallable, Category =GridMovement)
-			void MoveToPosition(int32 CurrentPosition, int32 Destination);
+			void MoveToPosition();
 
 		UFUNCTION(BlueprintCallable, Category = GridMovement)
 			int32 GetGridNum(FVector InputPosition, TArray<FVector> WorldGridRef);
@@ -194,4 +194,14 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			int32 SpeedStat;
 		//Used to grab the speed stat
 		int32 GetSpeedStat(void);
+
+
+		/* TEST Variables for Later Implementation*/
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			bool bChooseMove = false;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 MoveToChosenPosition;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			bool bChooseAttack;
+	
 };

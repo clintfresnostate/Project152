@@ -16,7 +16,7 @@ void AProject_152GameMode::StartCombat(TArray<AParentCombatCharacter*> Character
 {
 	//Temp Variables we need
 	int32 HighestSpeed = 0;
-	int32 IndexSave;
+	//int32 IndexSave;
 	int32 TurnIncrementer = 0;
 	//Final and temp Array Used to Sort the Characters
 	TArray <AParentCombatCharacter*> TempCharactersInCombat = CharactersInCombat;
@@ -25,6 +25,7 @@ void AProject_152GameMode::StartCombat(TArray<AParentCombatCharacter*> Character
 	//Sorting by highest Speed goes first
 	//Each iteration removes the highest and adds it to the new array
 	
+	/*
 	while (TempCharactersInCombat.Num() > 0)
 	{
 		for (int32 i = 0; i < TempCharactersInCombat.Num(); i++)
@@ -46,10 +47,20 @@ void AProject_152GameMode::StartCombat(TArray<AParentCombatCharacter*> Character
 		IndexSave = -1;
 		HighestSpeed = 0;
 	}
-	
+	*/
 	//While loop to loop through turns until combat is over
 	while (bInCombat)
 	{
-		ArrangedCharactersInCombat[TurnIncrementer]->TakeTurn();
+		if (bDo)
+		{
+			CharactersInCombat[TurnIncrementer]->TakeTurn();
+			bDo = false;
+			bInCombat = false;
+		}
 	}
+}
+void AProject_152GameMode::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
 }
