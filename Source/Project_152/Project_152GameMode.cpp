@@ -11,7 +11,7 @@ AProject_152GameMode::AProject_152GameMode()
 	// set default pawn class to our character
 	DefaultPawnClass = AProject_152Character::StaticClass();	
 }
-
+/*
 void AProject_152GameMode::StartCombat(TArray<AParentCombatCharacter*> CharactersInCombat, ACombatGrid* GridRef)
 {
 	//Temp Variables we need
@@ -25,7 +25,7 @@ void AProject_152GameMode::StartCombat(TArray<AParentCombatCharacter*> Character
 	//Sorting by highest Speed goes first
 	//Each iteration removes the highest and adds it to the new array
 	
-	/*
+	
 	while (TempCharactersInCombat.Num() > 0)
 	{
 		for (int32 i = 0; i < TempCharactersInCombat.Num(); i++)
@@ -47,7 +47,7 @@ void AProject_152GameMode::StartCombat(TArray<AParentCombatCharacter*> Character
 		IndexSave = -1;
 		HighestSpeed = 0;
 	}
-	*/
+	
 	//While loop to loop through turns until combat is over
 	while (bInCombat)
 	{
@@ -59,8 +59,18 @@ void AProject_152GameMode::StartCombat(TArray<AParentCombatCharacter*> Character
 		}
 	}
 }
+*/
 void AProject_152GameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bInCombat)
+	{
+		if (bMoveOnTurn)
+		{
+			CharactersInCombat[TurnIncrement]->TakeTurn();
+			bMoveOnTurn = false;
+			bInCombat = false;
+		}
+	}
 }

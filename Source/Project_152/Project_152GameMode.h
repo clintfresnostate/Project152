@@ -16,12 +16,13 @@ UCLASS(minimalapi)
 class AProject_152GameMode : public AGameMode
 {
 	GENERATED_BODY()
+
 public:
 	AProject_152GameMode();
 
 	//This will start the combat. Pass through the characters involved and which grid its on
-	UFUNCTION(BlueprintCallable, Category = Combat)
-		void StartCombat(TArray<AParentCombatCharacter*> CharactersInCombat, ACombatGrid* GridRef);
+//	UFUNCTION(BlueprintCallable, Category = Combat)
+//		void StartCombat(TArray<AParentCombatCharacter*> CharactersInCombat, ACombatGrid* GridRef);
 
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -32,6 +33,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 		TArray<AParentCombatCharacter*> CharactersInCombat;
 
-	void DoOnce();
-	bool bDo;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		ACombatGrid* GridRef;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		int32 TurnIncrement = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		bool bMoveOnTurn;
 };
