@@ -108,5 +108,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 		int32 CurrentMouseLocationIndex;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		bool bMouseCursorSpawned = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		bool bMouseClickDisabled;
 };

@@ -63,14 +63,19 @@ void AProject_152GameMode::StartCombat(TArray<AParentCombatCharacter*> Character
 void AProject_152GameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	if (bInCombat)
 	{
-		if (bMoveOnTurn)
+		if (bTakeTurn)
 		{
-			CharactersInCombat[TurnIncrement]->TakeTurn();
-			bMoveOnTurn = false;
-			bInCombat = false;
+			CharactersInCombat[TurnIncrement % CharactersInCombat.Num()]->TakeTurn();
+			bTakeTurn = false;
+		}
+		if (bNextTurn)
+		{
+			CharactersInCombat[TurnIncrement % CharactersInCombat.Num()]->RefreshMoves(1);
+			TurnIncrement++;
+			bNextTurn = false;
 		}
 	}
 }

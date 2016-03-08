@@ -5,6 +5,7 @@
 #include "PaperFlipbookComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "CombatGrid.h"
+#include "Project_152GameMode.h"
 
 DEFINE_LOG_CATEGORY_STATIC(SideScrollerCharacter, Log, All);
 //////////////////////////////////////////////////////////////////////////
@@ -404,23 +405,47 @@ int32 AParentCombatCharacter::GetSpeedStat()
 void AParentCombatCharacter::TakeTurn()
 {
 	PathwayPoints.Empty();
-	if ((NumberOfMovesRemaining > 0) & (NumberOfAttacksRemaining>0))
+	if ((NumberOfMovesRemaining > 0)) //& (NumberOfAttacksRemaining>0))
 	{
 		if (bChooseMove)
 		{
 			if (NumberOfMovesRemaining > 0)
 			{
 				//Get the chosen position from the player when they click
-				PathwayPoints.Add(0);
+				PathwayPoints.Add(GetGridNum(GetActorLocation(),WorldGridRef));
 				PathwayPoints.Add(MoveToChosenPosition);
 				MoveToPosition();
 				NumberOfMovesRemaining--;
-				NumberOfAttacksRemaining--;
 			}
 			else
 			{
 				bChooseMove = false;
 			}
 		}
+		if (bChooseAttack)
+		{
+			if (NumberOfAttacksRemaining > 0)
+			{
+
+			}
+		}
 	}
+	else if (!bInMovement & !bIsAttacking)
+	{
+		//Once the character is out of moves, update the gamemode to increment the turn so that the next player can take a turn
+		GetWorld()->GetAuthGameMode<AProject_152GameMode>()->bNextTurn = true;	
+	}
+}
+void AParentCombatCharacter::RefreshMoves(int32 MovementsAdded)
+{
+	NumberOfMovesRemaining += MovementsAdded;
+}
+
+//This is used to keep track of the characters position on the grid. This Allows characters to not overlap. Last known position has to be re set back to its original
+void AParentCombatCharacter::UpdatePositionOnGrid(ACombatGrid* CombatGridRef)
+{
+	int32 CurrentPosition = GetGridNum(GetActorLocation(), WorldGridRef);
+	CombatGridRef->GridType[LastKnownPosition] = 0;
+	CombatGridRef->GridType[CurrentPosition] = 1;
+	LastKnownPosition = CurrentPosition;
 }

@@ -40,5 +40,11 @@ public:
 		int32 TurnIncrement = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
-		bool bMoveOnTurn;
+		bool bTakeTurn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		bool bNextTurn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+		bool bDoneWithMove;
 };

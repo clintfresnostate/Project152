@@ -163,6 +163,9 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Grid)
 			int32 TestGridNum;
 
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Grid)
+			int32 LastKnownPosition;
+
 		// Need to set this ref to the World Grid or else the character wont know which grid to apply to
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
 			TArray<FVector> WorldGridRef;
@@ -185,6 +188,8 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			bool bIsAttacking = false;
 		UFUNCTION(BlueprintCallable, Category = Combat)
 			void TakeTurn();
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+			int32 RangeOfAttack;
 		
 	
 
@@ -203,5 +208,8 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			int32 MoveToChosenPosition;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 			bool bChooseAttack;
-	
+		UFUNCTION(BlueprintCallable, Category = Combat)
+			void RefreshMoves(int32 MovementsAdded);
+		UFUNCTION(BlueprintCallable, Category = Combat)
+			void UpdatePositionOnGrid(ACombatGrid* CombatGridRef);
 };
