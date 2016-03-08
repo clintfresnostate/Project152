@@ -449,3 +449,302 @@ void AParentCombatCharacter::UpdatePositionOnGrid(ACombatGrid* CombatGridRef)
 	CombatGridRef->GridType[CurrentPosition] = 1;
 	LastKnownPosition = CurrentPosition;
 }
+
+void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGridNum, ACombatGrid* CombatGridRef)
+{
+
+	// generating walls for testing purposes
+
+	CombatGridRef->GridType[10] = 1;
+	CombatGridRef->GridType[11] = 1;
+	CombatGridRef->GridType[12] = 1;
+	CombatGridRef->GridType[18] = 1;
+	CombatGridRef->GridType[26] = 1;
+	//CombatGridRef->GridType[27] = 1;
+	//CombatGridRef->GridType[25] = 1;
+	CombatGridRef->GridType[13] = 1;
+	CombatGridRef->GridType[14] = 1;
+
+	CombatGridRef->GridType[15] = 1;
+
+
+
+	// flush out previous pathway
+	for (int i = 0; i < PathwayPoints.Num(); i++)
+	{
+		PathwayPoints.Pop();
+	}
+
+	struct pQueueItem {
+		int32 gridID;
+		int32 priority;
+		int32 stepsToPoint;
+		TArray<int32> currentPath;
+		bool operator<(const pQueueItem rhs)
+		{
+			return (priority < rhs.priority);
+		}
+	};
+
+	int i;
+	TArray<int32> visitedLocations;
+	visitedLocations.Add(startGridNum);
+	TArray<pQueueItem> pQueue;
+	pQueueItem firstItem;
+	firstItem.gridID = startGridNum;
+	firstItem.priority = 0;
+	firstItem.stepsToPoint = 0;
+	firstItem.currentPath.Push(startGridNum);
+	pQueue.Push(firstItem);
+
+	int32 maxX = CombatGridRef->GetMaxX();
+	int32 maxY = CombatGridRef->GetMaxY();
+	int32 currentLocation;
+	int32 currentLocationQuotient;
+	int32 currentLocationRemainder;
+	int32 currentSteps;
+
+	TArray<int32> pathToPoint;
+	while (true)
+	{
+		pQueueItem topItem = pQueue.Pop();
+		currentLocation = topItem.gridID;
+		pathToPoint = topItem.currentPath;
+		currentSteps = topItem.stepsToPoint;
+		// PathwayPoints.Push(currentLocation);
+		if (currentLocation == destGridNum)
+			break;
+		bool expanded = false;
+		currentLocationQuotient = currentLocation / maxY;
+		currentLocationRemainder = currentLocation % maxY;
+		TArray<pQueueItem> adjacentLocations;
+		pQueueItem adjacentItem;
+
+		//TArray<int32> surroundingLocations;
+		// TArray<int32> surroundingPriority;
+		int32 nextLocation;
+		int32 nextHorizontalMovements;
+		int32 nextVerticalMovements;
+
+		// Adding location directly UP and to the LEFT
+		// Checking if the current location is not in the 1st column and not in the 1st row
+		// Also check if its open and not already visited
+		/* if (currentLocationQuotient != 0 && currentLocationRemainder != 0)
+		{
+		nextLocation = currentLocation - maxY - 1;
+		if (CombatGridRef->GridType[nextLocation] == 0 && !visitedLocations.Contains(nextLocation))
+		{
+		nextHorizontalMovements = destGridNum / maxY - nextLocation / maxY;
+		nextVerticalMovements = destGridNum % maxY - nextLocation % maxY;
+
+		visitedLocations.Add(nextLocation);
+		adjacentItem.gridID = nextLocation;
+		adjacentItem.priority = abs(nextHorizontalMovements) + abs(nextVerticalMovements);
+		adjacentLocations.Add(adjacentItem);
+
+		// surroundingLocations.Add(nextLocation);
+		// surroundingPriority.Add(abs(nextHorizontalMovements) + abs(nextVerticalMovements));
+		}
+		} */
+		// Adding location directly UP
+		// Checking if the current node is not at the first row
+		// Also check if its open and not already visited
+		if (currentLocationRemainder != 0)
+		{
+			nextLocation = currentLocation - 1;
+			if (CombatGridRef->GridType[nextLocation] == 0 && !visitedLocations.Contains(nextLocation))
+			{
+				nextHorizontalMovements = destGridNum / maxY - nextLocation / maxY;
+				nextVerticalMovements = destGridNum % maxY - nextLocation % maxY;
+
+				visitedLocations.Add(nextLocation);
+				adjacentItem.gridID = nextLocation;
+				adjacentItem.stepsToPoint = currentSteps + 1;
+				adjacentItem.priority = abs(nextHorizontalMovements) + abs(nextVerticalMovements) + adjacentItem.stepsToPoint;
+				TArray<int32> nextPathToPoint = pathToPoint;
+				nextPathToPoint.Push(nextLocation);
+				adjacentItem.currentPath = nextPathToPoint;
+				adjacentLocations.Push(adjacentItem);
+
+				// surroundingLocations.Add(nextLocation);
+				// surroundingPriority.Add(abs(nextHorizontalMovements) + abs(nextVerticalMovements));
+			}
+		}
+		// Adding location directly UP and to the RIGHT
+		// Checking if the current location is not in the last colum and not in the first row
+		// Also check if its open and not already visited
+		/* if (currentLocationQuotient != (maxX - 1) && currentLocationRemainder != 0)
+		{
+		nextLocation = currentLocation + maxY - 1;
+		if (CombatGridRef->GridType[nextLocation] == 0 && !visitedLocations.Contains(nextLocation))
+		{
+		nextHorizontalMovements = destGridNum / maxY - nextLocation / maxY;
+		nextVerticalMovements = destGridNum % maxY - nextLocation % maxY;
+
+		visitedLocations.Add(nextLocation);
+		adjacentItem.gridID = nextLocation;
+		adjacentItem.priority = abs(nextHorizontalMovements) + abs(nextVerticalMovements);
+		adjacentLocations.Add(adjacentItem);
+
+		// surroundingLocations.Add(nextLocation);
+		// surroundingPriority.Add(abs(nextHorizontalMovements) + abs(nextVerticalMovements));
+		}
+		}*/
+		// Adding location directly to the LEFT
+		// Checking if the current location is not in the first column
+		// Also check if it is open and not already visited
+		if (currentLocationQuotient != 0)
+		{
+			nextLocation = currentLocation - maxY;
+			if (CombatGridRef->GridType[nextLocation] == 0 && !visitedLocations.Contains(nextLocation))
+			{
+				nextHorizontalMovements = destGridNum / maxY - nextLocation / maxY;
+				nextVerticalMovements = destGridNum % maxY - nextLocation % maxY;
+
+				visitedLocations.Add(nextLocation);
+				adjacentItem.gridID = nextLocation;
+				adjacentItem.stepsToPoint = currentSteps + 1;
+				adjacentItem.priority = abs(nextHorizontalMovements) + abs(nextVerticalMovements) + adjacentItem.stepsToPoint;
+				TArray<int32> nextPathToPoint = pathToPoint;
+				nextPathToPoint.Push(nextLocation);
+				adjacentItem.currentPath = nextPathToPoint;
+				adjacentLocations.Push(adjacentItem);
+
+				// surroundingLocations.Add(nextLocation);
+				// surroundingPriority.Add(abs(nextHorizontalMovements) + abs(nextVerticalMovements));
+			}
+		}
+		// Adding location directly to the RIGHT
+		// Checking if the location is not in the last column
+		// Also check if its open  and not already visited
+		if (currentLocationQuotient != maxX - 1)
+		{
+			nextLocation = currentLocation + maxY;
+			if (CombatGridRef->GridType[nextLocation] == 0 && !visitedLocations.Contains(nextLocation))
+			{
+				nextHorizontalMovements = destGridNum / maxY - nextLocation / maxY;
+				nextVerticalMovements = destGridNum % maxY - nextLocation % maxY;
+
+				visitedLocations.Add(nextLocation);
+				adjacentItem.gridID = nextLocation;
+				adjacentItem.stepsToPoint = currentSteps + 1;
+				adjacentItem.priority = abs(nextHorizontalMovements) + abs(nextVerticalMovements) + adjacentItem.stepsToPoint;
+				TArray<int32> nextPathToPoint = pathToPoint;
+				nextPathToPoint.Push(nextLocation);
+				adjacentItem.currentPath = nextPathToPoint;
+				adjacentLocations.Push(adjacentItem);
+
+				// surroundingLocations.Add(nextLocation);
+				// surroundingPriority.Add(abs(nextHorizontalMovements) + abs(nextVerticalMovements));
+			}
+		}
+		// Adding location directly DOWN and to the LEFT
+		// Checking if the loaciton is not at the first colum and not in the bottom row
+		// Also check if it is open and not already visited
+		/* if (currentLocationQuotient != 0 && currentLocationRemainder != (maxY - 1))
+		{
+		nextLocation = currentLocation - maxY + 1;
+		if (CombatGridRef->GridType[nextLocation] == 0 && !visitedLocations.Contains(nextLocation))
+		{
+		nextHorizontalMovements = destGridNum / maxY - nextLocation / maxY;
+		nextVerticalMovements = destGridNum % maxY - nextLocation % maxY;
+
+		visitedLocations.Add(nextLocation);
+		adjacentItem.gridID = nextLocation;
+		adjacentItem.priority = abs(nextHorizontalMovements) + abs(nextVerticalMovements);
+		adjacentLocations.Add(adjacentItem);
+
+		// surroundingLocations.Add(nextLocation);
+		// surroundingPriority.Add(abs(nextHorizontalMovements) + abs(nextVerticalMovements));
+		}
+		} */
+		// Adding the location directly DOWN
+		// Checking if the location is not at the bottom row
+		// Check if it is open  and not already visited
+		if (currentLocationRemainder != (maxY - 1))
+		{
+			nextLocation = currentLocation + 1;
+			if (CombatGridRef->GridType[nextLocation] == 0 && !visitedLocations.Contains(nextLocation))
+			{
+				nextHorizontalMovements = destGridNum / maxY - nextLocation / maxY;
+				nextVerticalMovements = destGridNum % maxY - nextLocation % maxY;
+
+				visitedLocations.Add(nextLocation);
+				adjacentItem.gridID = nextLocation;
+				adjacentItem.stepsToPoint = currentSteps + 1;
+				adjacentItem.priority = abs(nextHorizontalMovements) + abs(nextVerticalMovements) + adjacentItem.stepsToPoint;
+				TArray<int32> nextPathToPoint = pathToPoint;
+				nextPathToPoint.Push(nextLocation);
+				adjacentItem.currentPath = nextPathToPoint;
+				adjacentLocations.Push(adjacentItem);
+
+				// surroundingLocations.Add(nextLocation);
+				// surroundingPriority.Add(abs(nextHorizontalMovements) + abs(nextVerticalMovements));
+			}
+		}
+		// Adding the location directly DOWN and to the RIGHT
+		// Checking if the location is not at the bottom row or last column
+		// Also check if the spot is open and not already visited
+		/* if (currentLocationQuotient != (maxX - 1) && currentLocationRemainder != (maxY - 1))
+		{
+		nextLocation = currentLocation + maxY + 1;
+		if (CombatGridRef->GridType[nextLocation] == 0 && !visitedLocations.Contains(nextLocation))
+		{
+		nextHorizontalMovements = destGridNum / maxY - nextLocation / maxY;
+		nextVerticalMovements = destGridNum % maxY - nextLocation % maxY;
+
+		visitedLocations.Add(nextLocation);
+		adjacentItem.gridID = nextLocation;
+		adjacentItem.priority = abs(nextHorizontalMovements) + abs(nextVerticalMovements);
+		adjacentLocations.Add(adjacentItem);
+
+		// surroundingLocations.Add(nextLocation);
+		// surroundingPriority.Add(abs(nextHorizontalMovements) + abs(nextVerticalMovements));
+		}
+		}*/
+
+		// Check if the location expanded to any new locations
+		/* if (adjacentLocations.Num() != 0)
+		{
+		expanded = true;
+		}*/
+		// Sort the surroundingLocations based on surroundingPriority values (insertion sort)
+		for (i = 0; i < adjacentLocations.Num() - 1; i++)
+		{
+			for (int j = i + 1; j > 0; j--)
+			{
+				if (adjacentLocations[j].priority < adjacentLocations[j - 1].priority)
+				{
+					adjacentLocations.Swap(j, j - 1);
+				}
+			}
+		}
+
+		// Push the surrounding locations into the pQueue stack, inserting the lowest priority at the top
+		for (i = adjacentLocations.Num() - 1; i >= 0; i--)
+		{
+			TArray<pQueueItem> tempStack;
+			pQueueItem temp;
+			// popping the top of the pqueue stack to the temp stack if the priority is larger than the top
+			while (pQueue.Num() != 0 && pQueue.Top().priority <= adjacentLocations[i].priority)
+			{
+				temp = pQueue.Pop();
+				tempStack.Push(temp);
+			}
+			// Now push the new temp into the stack
+			pQueue.Push(adjacentLocations[i]);
+			// Then push the temp stack back onto the pqueue stack
+			pQueueItem temp2;
+			while (tempStack.Num() != 0)
+			{
+				temp2 = tempStack.Pop();
+				pQueue.Push(temp2);
+			}
+		}
+
+		// To do:
+		// Path as part of pQueueItem, so that when we pop we know the most recent path
+		// possibly change the findtileswinthinone fucntion and call it insread of doing it inside function
+	}
+	PathwayPoints = pathToPoint;
+}
