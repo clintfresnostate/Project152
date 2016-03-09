@@ -213,7 +213,7 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		UFUNCTION(BlueprintCallable, Category = Combat)
 			void UpdatePositionOnGrid(ACombatGrid* CombatGridRef);
 
-		// Generate the shortest path from starting gridNum to destination gridnum
+		// Generate the shortest path from starting gridNum to destination gridnum storing it in the PathwayPoints array
 		UFUNCTION(BlueprintCallable, Category = GridMovement)
 			void GeneratePathways(int32 startGridNum, int32 destGridNum, ACombatGrid* CombatGridRef);
 };

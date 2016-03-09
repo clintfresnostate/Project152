@@ -453,35 +453,19 @@ void AParentCombatCharacter::UpdatePositionOnGrid(ACombatGrid* CombatGridRef)
 
 void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGridNum, ACombatGrid* CombatGridRef)
 {
-	/*
-	// generating walls for testing purposes
-
-	CombatGridRef->GridType[10] = 1;
-	CombatGridRef->GridType[11] = 1;
-	CombatGridRef->GridType[12] = 1;
-	CombatGridRef->GridType[18] = 1;
-	CombatGridRef->GridType[26] = 1;
-	//CombatGridRef->GridType[27] = 1;
-	//CombatGridRef->GridType[25] = 1;
-	CombatGridRef->GridType[13] = 1;
-	CombatGridRef->GridType[14] = 1;
-
-	CombatGridRef->GridType[15] = 1;
-
-
+	// Use the graph A star search algorithm keeping track of the path cost (number of steps taken) with the
+	// heuristic where heuristic(location) = number of horizontal distance from destination + number of vertical distance from destination
 
 	// flush out previous pathway
-	for (int i = 0; i < PathwayPoints.Num(); i++)
-	{
-		PathwayPoints.Pop();
-	}
-	*/
 	PathwayPoints.Empty();
+
+	// Create a struct that we will use to represent a priority queue item
 	struct pQueueItem {
-		int32 gridID;
-		int32 priority;
-		int32 stepsToPoint;
-		TArray<int32> currentPath;
+		int32 gridID;	// represents the gridNum of the item in the priority queue
+		int32 priority;	// represents the priority of the item (lower is higher priority); similar to cost
+		int32 stepsToPoint;	// represents the number of steps taken to get to the current location from the origin/start
+		TArray<int32> currentPath; // represents the pathway taken from the origin to the current location
+		// Used to compare which item (lowest priority) should be popped out first
 		bool operator<(const pQueueItem rhs)
 		{
 			return (priority < rhs.priority);
@@ -489,9 +473,14 @@ void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGrid
 	};
 
 	int i;
+	// Used to keep track of the locations we already expanded to
 	TArray<int32> visitedLocations;
 	visitedLocations.Add(startGridNum);
+
+	// Used to represent a priortiy queue
 	TArray<pQueueItem> pQueue;
+
+	// Pushing the first item into the pqueue, so its not empty
 	pQueueItem firstItem;
 	firstItem.gridID = startGridNum;
 	firstItem.priority = 0;
@@ -499,55 +488,42 @@ void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGrid
 	firstItem.currentPath.Push(startGridNum);
 	pQueue.Push(firstItem);
 
+	// Used to store the combatGrid's max X and Y, used later
 	int32 maxX = CombatGridRef->GetMaxX();
 	int32 maxY = CombatGridRef->GetMaxY();
+
+	// used to keep track of the current location we are expanding
+	// also keep track of the quotient (column) and remainder (row) of the location
 	int32 currentLocation;
 	int32 currentLocationQuotient;
 	int32 currentLocationRemainder;
 	int32 currentSteps;
 
+	// Used to keep track of the current path we have to the current location we are expanding
 	TArray<int32> pathToPoint;
+	
 	while (true)
 	{
+		// Pop off the first item of the pqueue. This is the location we are expanding.
 		pQueueItem topItem = pQueue.Pop();
 		currentLocation = topItem.gridID;
 		pathToPoint = topItem.currentPath;
 		currentSteps = topItem.stepsToPoint;
-		// PathwayPoints.Push(currentLocation);
+		
+		// check if the popped item is the origin, if so, break the while loop
 		if (currentLocation == destGridNum)
 			break;
-		bool expanded = false;
-		currentLocationQuotient = currentLocation / maxY;
-		currentLocationRemainder = currentLocation % maxY;
-		TArray<pQueueItem> adjacentLocations;
+
+		currentLocationQuotient = currentLocation / maxY;	// represents the column of the current location
+		currentLocationRemainder = currentLocation % maxY; // represents the row of the current location
+		
+		TArray<pQueueItem> adjacentLocations; // used to store the adjacent locations
 		pQueueItem adjacentItem;
 
-		//TArray<int32> surroundingLocations;
-		// TArray<int32> surroundingPriority;
-		int32 nextLocation;
-		int32 nextHorizontalMovements;
-		int32 nextVerticalMovements;
+		int32 nextLocation;	// used to store the grid number of the next location we are expanding to
+		int32 nextHorizontalMovements; //used to store the amount of horizontal movements to get from the next location to the dest
+		int32 nextVerticalMovements; // used to store the amound of vertical movements to get from the next location to the dest
 
-		// Adding location directly UP and to the LEFT
-		// Checking if the current location is not in the 1st column and not in the 1st row
-		// Also check if its open and not already visited
-		/* if (currentLocationQuotient != 0 && currentLocationRemainder != 0)
-		{
-		nextLocation = currentLocation - maxY - 1;
-		if (CombatGridRef->GridType[nextLocation] == 0 && !visitedLocations.Contains(nextLocation))
-		{
-		nextHorizontalMovements = destGridNum / maxY - nextLocation / maxY;
-		nextVerticalMovements = destGridNum % maxY - nextLocation % maxY;
-
-		visitedLocations.Add(nextLocation);
-		adjacentItem.gridID = nextLocation;
-		adjacentItem.priority = abs(nextHorizontalMovements) + abs(nextVerticalMovements);
-		adjacentLocations.Add(adjacentItem);
-
-		// surroundingLocations.Add(nextLocation);
-		// surroundingPriority.Add(abs(nextHorizontalMovements) + abs(nextVerticalMovements));
-		}
-		} */
 		// Adding location directly UP
 		// Checking if the current node is not at the first row
 		// Also check if its open and not already visited
@@ -567,31 +543,8 @@ void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGrid
 				nextPathToPoint.Push(nextLocation);
 				adjacentItem.currentPath = nextPathToPoint;
 				adjacentLocations.Push(adjacentItem);
-
-				// surroundingLocations.Add(nextLocation);
-				// surroundingPriority.Add(abs(nextHorizontalMovements) + abs(nextVerticalMovements));
 			}
 		}
-		// Adding location directly UP and to the RIGHT
-		// Checking if the current location is not in the last colum and not in the first row
-		// Also check if its open and not already visited
-		/* if (currentLocationQuotient != (maxX - 1) && currentLocationRemainder != 0)
-		{
-		nextLocation = currentLocation + maxY - 1;
-		if (CombatGridRef->GridType[nextLocation] == 0 && !visitedLocations.Contains(nextLocation))
-		{
-		nextHorizontalMovements = destGridNum / maxY - nextLocation / maxY;
-		nextVerticalMovements = destGridNum % maxY - nextLocation % maxY;
-
-		visitedLocations.Add(nextLocation);
-		adjacentItem.gridID = nextLocation;
-		adjacentItem.priority = abs(nextHorizontalMovements) + abs(nextVerticalMovements);
-		adjacentLocations.Add(adjacentItem);
-
-		// surroundingLocations.Add(nextLocation);
-		// surroundingPriority.Add(abs(nextHorizontalMovements) + abs(nextVerticalMovements));
-		}
-		}*/
 		// Adding location directly to the LEFT
 		// Checking if the current location is not in the first column
 		// Also check if it is open and not already visited
@@ -611,9 +564,6 @@ void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGrid
 				nextPathToPoint.Push(nextLocation);
 				adjacentItem.currentPath = nextPathToPoint;
 				adjacentLocations.Push(adjacentItem);
-
-				// surroundingLocations.Add(nextLocation);
-				// surroundingPriority.Add(abs(nextHorizontalMovements) + abs(nextVerticalMovements));
 			}
 		}
 		// Adding location directly to the RIGHT
@@ -635,31 +585,8 @@ void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGrid
 				nextPathToPoint.Push(nextLocation);
 				adjacentItem.currentPath = nextPathToPoint;
 				adjacentLocations.Push(adjacentItem);
-
-				// surroundingLocations.Add(nextLocation);
-				// surroundingPriority.Add(abs(nextHorizontalMovements) + abs(nextVerticalMovements));
 			}
 		}
-		// Adding location directly DOWN and to the LEFT
-		// Checking if the loaciton is not at the first colum and not in the bottom row
-		// Also check if it is open and not already visited
-		/* if (currentLocationQuotient != 0 && currentLocationRemainder != (maxY - 1))
-		{
-		nextLocation = currentLocation - maxY + 1;
-		if (CombatGridRef->GridType[nextLocation] == 0 && !visitedLocations.Contains(nextLocation))
-		{
-		nextHorizontalMovements = destGridNum / maxY - nextLocation / maxY;
-		nextVerticalMovements = destGridNum % maxY - nextLocation % maxY;
-
-		visitedLocations.Add(nextLocation);
-		adjacentItem.gridID = nextLocation;
-		adjacentItem.priority = abs(nextHorizontalMovements) + abs(nextVerticalMovements);
-		adjacentLocations.Add(adjacentItem);
-
-		// surroundingLocations.Add(nextLocation);
-		// surroundingPriority.Add(abs(nextHorizontalMovements) + abs(nextVerticalMovements));
-		}
-		} */
 		// Adding the location directly DOWN
 		// Checking if the location is not at the bottom row
 		// Check if it is open  and not already visited
@@ -679,41 +606,12 @@ void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGrid
 				nextPathToPoint.Push(nextLocation);
 				adjacentItem.currentPath = nextPathToPoint;
 				adjacentLocations.Push(adjacentItem);
-
-				// surroundingLocations.Add(nextLocation);
-				// surroundingPriority.Add(abs(nextHorizontalMovements) + abs(nextVerticalMovements));
 			}
 		}
-		// Adding the location directly DOWN and to the RIGHT
-		// Checking if the location is not at the bottom row or last column
-		// Also check if the spot is open and not already visited
-		/* if (currentLocationQuotient != (maxX - 1) && currentLocationRemainder != (maxY - 1))
-		{
-		nextLocation = currentLocation + maxY + 1;
-		if (CombatGridRef->GridType[nextLocation] == 0 && !visitedLocations.Contains(nextLocation))
-		{
-		nextHorizontalMovements = destGridNum / maxY - nextLocation / maxY;
-		nextVerticalMovements = destGridNum % maxY - nextLocation % maxY;
-
-		visitedLocations.Add(nextLocation);
-		adjacentItem.gridID = nextLocation;
-		adjacentItem.priority = abs(nextHorizontalMovements) + abs(nextVerticalMovements);
-		adjacentLocations.Add(adjacentItem);
-
-		// surroundingLocations.Add(nextLocation);
-		// surroundingPriority.Add(abs(nextHorizontalMovements) + abs(nextVerticalMovements));
-		}
-		}*/
-
-		// Check if the location expanded to any new locations
-		/* if (adjacentLocations.Num() != 0)
-		{
-		expanded = true;
-		}*/
 		// Sort the surroundingLocations based on surroundingPriority values (insertion sort)
 		for (i = 0; i < adjacentLocations.Num() - 1; i++)
 		{
-			for (int j = i + 1; j > 0; j--)
+			for (int32 j = i + 1; j > 0; j--)
 			{
 				if (adjacentLocations[j].priority < adjacentLocations[j - 1].priority)
 				{
@@ -721,8 +619,7 @@ void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGrid
 				}
 			}
 		}
-
-		// Push the surrounding locations into the pQueue stack, inserting the lowest priority at the top
+		// Push the surrounding locations into the pQueue stack, inserting the lowest priority value at the top
 		for (i = adjacentLocations.Num() - 1; i >= 0; i--)
 		{
 			TArray<pQueueItem> tempStack;
@@ -743,10 +640,6 @@ void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGrid
 				pQueue.Push(temp2);
 			}
 		}
-
-		// To do:
-		// Path as part of pQueueItem, so that when we pop we know the most recent path
-		// possibly change the findtileswinthinone fucntion and call it insread of doing it inside function
 	}
-	PathwayPoints = pathToPoint;
+	PathwayPoints = pathToPoint; // Set the pathwaypoints to the path to the location that caused us to break the while loop (dest)
 }
