@@ -157,8 +157,8 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		FRotator MoveRightRotation = FRotator(0, 0, -45);
 		FRotator MoveLeftRotation = FRotator(0, 180, 45);
 
-
-		ACombatGrid* CombatGrid;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Grid)
+			ACombatGrid* CombatGrid;
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Grid)
 			int32 TestGridNum;

@@ -412,8 +412,9 @@ void AParentCombatCharacter::TakeTurn()
 			if (NumberOfMovesRemaining > 0)
 			{
 				//Get the chosen position from the player when they click
-				PathwayPoints.Add(GetGridNum(GetActorLocation(),WorldGridRef));
-				PathwayPoints.Add(MoveToChosenPosition);
+				//PathwayPoints.Add(GetGridNum(GetActorLocation(),WorldGridRef));
+				//PathwayPoints.Add(MoveToChosenPosition);
+				GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), MoveToChosenPosition, CombatGrid);
 				MoveToPosition();
 				NumberOfMovesRemaining--;
 			}
@@ -452,7 +453,7 @@ void AParentCombatCharacter::UpdatePositionOnGrid(ACombatGrid* CombatGridRef)
 
 void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGridNum, ACombatGrid* CombatGridRef)
 {
-
+	/*
 	// generating walls for testing purposes
 
 	CombatGridRef->GridType[10] = 1;
@@ -474,7 +475,8 @@ void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGrid
 	{
 		PathwayPoints.Pop();
 	}
-
+	*/
+	PathwayPoints.Empty();
 	struct pQueueItem {
 		int32 gridID;
 		int32 priority;
