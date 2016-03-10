@@ -73,7 +73,7 @@ void AProject_152GameMode::Tick(float DeltaTime)
 		}
 		if (bNextTurn)
 		{
-			CharactersInCombat[TurnIncrement % CharactersInCombat.Num()]->RefreshMoves(1);
+			CharactersInCombat[TurnIncrement % CharactersInCombat.Num()]->RefreshMoves(1,1);
 			TurnIncrement++;
 			bNextTurn = false;
 		}

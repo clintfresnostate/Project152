@@ -104,12 +104,7 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			void MoveToPosition();
 
 		UFUNCTION(BlueprintCallable, Category = GridMovement)
-			int32 GetGridNum(FVector InputPosition, TArray<FVector> WorldGridRef);
-			
-		UFUNCTION(BlueprintCallable, Category = GridMovement)
 		TArray<FVector> GetLocationOfTilesWithinOneUnit(int32 GridNum, TArray<FVector> WorldGridRef, ACombatGrid* CombatGridRef);
-
-		
 
 		
 		
@@ -119,7 +114,8 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Spawning)
 			FVector StartingSpawnLocation;
 
-		
+		UFUNCTION(BlueprintCallable, Category = GridMovement)
+			int32 GetGridNum(FVector InputPosition, TArray<FVector> WorldGridRef);
 
 		//Variables for Movement
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
@@ -170,10 +166,6 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
 			TArray<FVector> WorldGridRef;
 
-		UFUNCTION(BlueprintNativeEvent, Category = GridMovement)
-			void MoveToGridEvent();
-
-
 		//Adds the item to the inventory given its FInventoryItemStruct or "data"
 		UFUNCTION(BlueprintCallable, Category = Inventory)
 			void GiveItem(FInventoryItemStruct Item);
@@ -188,8 +180,20 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			bool bIsAttacking = false;
 		UFUNCTION(BlueprintCallable, Category = Combat)
 			void TakeTurn();
+		UFUNCTION(BlueprintNativeEvent, Category = Combat)
+			void MoveToGridEvent();
+		UFUNCTION(BlueprintNativeEvent, Category = Combat)
+			void AttackEvent();
+		UFUNCTION(BlueprintCallable, Category = GridMovement)
+			void Attack();
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 AttackRange = 8;
+		UFUNCTION(BlueprintCallable, Category = GridMovement)
+			void GetValidRangedAttackTiles(int32 TargetLocation, ACombatGrid* CombatGridRef);
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
-			int32 RangeOfAttack;
+			FVector AttackTargetLocation;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+			TArray<int32> TilesInRange;
 		
 	
 
@@ -209,7 +213,7 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 			bool bChooseAttack;
 		UFUNCTION(BlueprintCallable, Category = Combat)
-			void RefreshMoves(int32 MovementsAdded);
+			void RefreshMoves(int32 MovementsAdded, int32 AttacksAdded);
 		UFUNCTION(BlueprintCallable, Category = Combat)
 			void UpdatePositionOnGrid(ACombatGrid* CombatGridRef);
 

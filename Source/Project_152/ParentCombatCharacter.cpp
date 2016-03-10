@@ -256,7 +256,29 @@ void AParentCombatCharacter::MoveToPosition()
 		}
 		
 }
-
+void AParentCombatCharacter::Attack()
+{
+	/*
+	//Check the facing position of the attack so it faces the way it attacks
+	FVector CurrentPosition = GetActorLocation();
+	FVector TargetPosition = GetActorLocation();
+	float FacingDirection = TargetPosition.X - CurrentPosition.X;
+	if (FacingDirection > 0)
+	{
+	FaceRight();
+	}
+	else
+	{
+	FaceLeft();
+	}
+	*/
+	//Double check and make sure the target is not already attacking
+	if (bIsAttacking == false)
+	{
+		AttackEvent();
+		bIsAttacking = true;
+	}
+}
 //Checks Each Possible Movement withint 1 unit and checks to see if its valid. If its valid it adds it to the valid locations for movement.
 TArray<FVector> AParentCombatCharacter::GetLocationOfTilesWithinOneUnit(int32 GridNum, TArray<FVector> WorldGridRef, ACombatGrid* TargetGrid)
 {
@@ -373,7 +395,11 @@ void AParentCombatCharacter::MoveToGridEvent_Implementation()
 {
 	
 }
+//Dummy Event used to interface with blueprints in order to tailor different attacks to each diff character we create
+void AParentCombatCharacter::AttackEvent_Implementation()
+{
 
+}
 //Make the character face a certain direction
 //Updates are disabled so that the facing direction is not changed. Remember to Re-enable.
 void AParentCombatCharacter::FaceRight()
@@ -405,7 +431,7 @@ int32 AParentCombatCharacter::GetSpeedStat()
 void AParentCombatCharacter::TakeTurn()
 {
 	PathwayPoints.Empty();
-	if ((NumberOfMovesRemaining > 0)) //& (NumberOfAttacksRemaining>0))
+	if ((NumberOfMovesRemaining > 0) || (NumberOfAttacksRemaining>0))
 	{
 		if (bChooseMove)
 		{
@@ -416,7 +442,7 @@ void AParentCombatCharacter::TakeTurn()
 				//PathwayPoints.Add(MoveToChosenPosition);
 				GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), MoveToChosenPosition, CombatGrid);
 				MoveToPosition();
-				NumberOfMovesRemaining--;
+				//NumberOfMovesRemaining--;
 			}
 			else
 			{
@@ -427,19 +453,22 @@ void AParentCombatCharacter::TakeTurn()
 		{
 			if (NumberOfAttacksRemaining > 0)
 			{
-
+				Attack();
 			}
 		}
 	}
+	/*
 	else if (!bInMovement & !bIsAttacking)
 	{
 		//Once the character is out of moves, update the gamemode to increment the turn so that the next player can take a turn
 		GetWorld()->GetAuthGameMode<AProject_152GameMode>()->bNextTurn = true;	
 	}
+	*/
 }
-void AParentCombatCharacter::RefreshMoves(int32 MovementsAdded)
+void AParentCombatCharacter::RefreshMoves(int32 MovementsAdded, int32 AttacksAdded)
 {
 	NumberOfMovesRemaining += MovementsAdded;
+	NumberOfAttacksRemaining += AttacksAdded;
 }
 
 //This is used to keep track of the characters position on the grid. This Allows characters to not overlap. Last known position has to be re set back to its original
@@ -642,4 +671,50 @@ void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGrid
 		}
 	}
 	PathwayPoints = pathToPoint; // Set the pathwaypoints to the path to the location that caused us to break the while loop (dest)
+}
+//This function attempts to retrieve the grid locations of a ranged attack only allowed directly to the right, left, down or up.
+void AParentCombatCharacter::GetValidRangedAttackTiles(int32 TargetLocation, ACombatGrid* CombatGridRef)
+{
+	int32 maxY = CombatGridRef->GetMaxY();
+	int32 maxX = CombatGridRef->GetMaxX();
+	int32 PossibleTile;
+	int32 CurrentPositionTile = GetGridNum(GetActorLocation(), CombatGridRef->WorldLocArray);
+	TilesInRange.Empty();
+
+	//Get all the possible tiles up to the range to the RIGHT
+	for (int i = 1; i <= AttackRange; i++)
+	{
+		PossibleTile = (CurrentPositionTile + i*(maxY));
+		if ((PossibleTile >= 0) & (PossibleTile <= CombatGridRef->WorldLocArray.Num() - 1))
+			TilesInRange.Add(PossibleTile);
+		else
+			break;
+	}
+	//Get all the possible tiles up to the range to the LEFT
+	for (int i = 1; i <= AttackRange; i++)
+	{
+		PossibleTile = (CurrentPositionTile - i*(maxY));
+		if ((PossibleTile >= 0) & (PossibleTile <= CombatGridRef->WorldLocArray.Num() - 1))
+			TilesInRange.Add(PossibleTile);
+		else
+			break;
+	}
+	//Get all the possible tiles up to the range in UP direction
+	for (int i = 1; i <= AttackRange; i++)
+	{
+		PossibleTile = (CurrentPositionTile - i);
+		if ((PossibleTile >= 0) & (PossibleTile <= CombatGridRef->WorldLocArray.Num() - 1) & (PossibleTile%maxY != (maxY - 1)))
+			TilesInRange.Add(PossibleTile);
+		else
+			break;
+	}
+	//Get all the possible tiles up to the range in Down direction
+	for (int i = 1; i <= AttackRange; i++)
+	{
+		PossibleTile = (CurrentPositionTile + i);
+		if ((PossibleTile >= 0) & (PossibleTile <= CombatGridRef->WorldLocArray.Num() - 1) & (PossibleTile%maxY != 0))
+			TilesInRange.Add(PossibleTile);
+		else
+			break;
+	}
 }

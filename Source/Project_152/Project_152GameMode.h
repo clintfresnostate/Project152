@@ -47,4 +47,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 		bool bDoneWithMove;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+		bool bDoneWithAttack;
 };

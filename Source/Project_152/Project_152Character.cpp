@@ -118,6 +118,11 @@ void AProject_152Character::Tick(float DeltaSeconds)
 		PlayerControllerRef->bShowMouseCursor = true;
 		PlayerControllerRef->bEnableClickEvents = true;
 		PlayerControllerRef->bEnableMouseOverEvents = true;
+
+		if (bEnableIndicators)
+		{
+			SpawnIndicators();
+		}
 	}
 	else
 	{
@@ -253,4 +258,9 @@ void AProject_152Character::SetWithinItemRadius(bool bIsInRadius, AInventoryItem
 		FocusedItem = nullptr; // we are not on the item radius and we dont have a focused item
 		bIsWithinItemRange = false; // 
 	}
+}
+//Dummy Event used to spawn the target indicators
+void AProject_152Character::SpawnIndicators_Implementation()
+{
+
 }

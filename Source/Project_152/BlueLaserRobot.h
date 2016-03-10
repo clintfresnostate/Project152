@@ -28,5 +28,5 @@ public:
 		FVector BeamSourceLocation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
-		FVector BeamTargetLocation;
+		FVector BeamTargetLocation = AttackTargetLocation;
 };

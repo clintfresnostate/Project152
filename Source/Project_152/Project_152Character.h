@@ -113,4 +113,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 		bool bMouseClickDisabled;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		bool bPlayerChoseMove = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		bool bPlayerChoseAttack = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		bool bEnableIndicators = false;
+
+	UFUNCTION(BlueprintNativeEvent, Category = Combat)
+		void SpawnIndicators();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		TArray<int32> SpawnIndicatorLocations;
 };
