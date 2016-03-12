@@ -5,6 +5,7 @@
 #include "PaperFlipbookComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "CombatGrid.h"
+#include "Project_152Character.h"
 #include "Project_152GameMode.h"
 
 DEFINE_LOG_CATEGORY_STATIC(SideScrollerCharacter, Log, All);
@@ -475,9 +476,11 @@ void AParentCombatCharacter::RefreshMoves(int32 MovementsAdded, int32 AttacksAdd
 void AParentCombatCharacter::UpdatePositionOnGrid(ACombatGrid* CombatGridRef)
 {
 	int32 CurrentPosition = GetGridNum(GetActorLocation(), WorldGridRef);
-	CombatGridRef->GridType[LastKnownPosition] = 0;
-	CombatGridRef->GridType[CurrentPosition] = 1;
+	int32 GridTypeHolder = CombatGridRef->GridType[CurrentPosition];
+	CombatGridRef->GridType[LastKnownPosition] = CombatGridRef->GridType[CurrentPosition];
+	CombatGridRef->GridType[CurrentPosition] = 2;
 	LastKnownPosition = CurrentPosition;
+	IndexOfLocationOnGrid = CurrentPosition;
 }
 
 void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGridNum, ACombatGrid* CombatGridRef)
@@ -716,5 +719,21 @@ void AParentCombatCharacter::GetValidRangedAttackTiles(int32 TargetLocation, ACo
 			TilesInRange.Add(PossibleTile);
 		else
 			break;
+	}
+}
+//This checks the tile you are attacking for a target by comparing the selected grid to each characters index value which holds their current position
+//This will set the acquired target if its valid
+void AParentCombatCharacter::AcquireTargetFromMouse(int32 GridIndex, ACombatGrid* CombatGridRef)
+{
+	AProject_152Character* PlayerCharacter = Cast<AProject_152Character>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	AProject_152GameMode* GameModeRef = Cast<AProject_152GameMode>(GetWorld()->GetAuthGameMode());
+	for (int i = 0; i < GameModeRef->CharactersInCombat.Num(); i++)
+	{
+		if (GameModeRef->CharactersInCombat[i]->IndexOfLocationOnGrid == PlayerCharacter->CurrentMouseLocationIndex)
+		{
+			AcquiredTarget = GameModeRef->CharactersInCombat[i];
+			SuccessfulAcquiredTarget = true;
+			break;
+		}
 	}
 }

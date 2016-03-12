@@ -138,6 +138,9 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			bool bInMovement = false;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
 			bool bEnableUpdate = true;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GridMovement)
+			int32 IndexOfLocationOnGrid;
+
 		//Grid Movement
 		UFUNCTION(BlueprintCallable, Category = GridMovement)
 			void FaceRight();
@@ -194,13 +197,22 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			FVector AttackTargetLocation;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 			TArray<int32> TilesInRange;
-		
-	
-
+		UFUNCTION(BlueprintCallable, Category = GridMovement)
+			void AcquireTargetFromMouse(int32 GridIndex, ACombatGrid* CombatGridRef);
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			APaperCharacter* AcquiredTarget;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			bool SuccessfulAcquiredTarget = false;
 
 		/*  STATS  */
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 			int32 SpeedStat;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 HealthStat = 200;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 DamageMaxStat;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 DamageMinStat;
 		//Used to grab the speed stat
 		int32 GetSpeedStat(void);
 
