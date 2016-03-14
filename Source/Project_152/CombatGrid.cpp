@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Project_152.h"
+#include "Project_152GameMode.h"
 #include "CombatGrid.h"
 
 ACombatGrid::ACombatGrid()
@@ -63,6 +64,19 @@ void ACombatGrid::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
+	AProject_152GameMode* GameModeRef = Cast<AProject_152GameMode>(GetWorld()->GetAuthGameMode());
+	if ((GameModeRef->bInCombat) & SetInitialFacing)
+	{
+		for (int i = 0; i < GameModeRef->CharactersInCombat.Num(); i++)
+		{
+			if (GameModeRef->CharactersInCombat[i]->bIsHumanPlayer == false)
+			{
+				GameModeRef->CharactersInCombat[i]->FaceLeft();
+			}
+		}
+		SetInitialFacing = false;
+	}
+	
 }
 //This will convert the points starting from the NorthWest Corner to the mid point of each tiles.
 //Input is the Array of Vectors. Returns the new grid coordinates. ONLY DO ONCE. Adds offset values to each vector.

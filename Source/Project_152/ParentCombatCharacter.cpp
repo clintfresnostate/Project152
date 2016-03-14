@@ -405,24 +405,24 @@ void AParentCombatCharacter::AttackEvent_Implementation()
 //Updates are disabled so that the facing direction is not changed. Remember to Re-enable.
 void AParentCombatCharacter::FaceRight()
 {
-	bEnableUpdate = false;
+	//bEnableUpdate = false;
 	GetSprite()->SetFlipbook(IdleAnimation);
 	GetSprite()->SetWorldRotation(MoveRightRotation);
 }
 void AParentCombatCharacter::FaceDown()
 {
-	bEnableUpdate = false;
+	//bEnableUpdate = false;
 	GetSprite()->SetFlipbook(DownIdleAnimation);
 }
 void AParentCombatCharacter::FaceLeft()
 {
-	bEnableUpdate = false;
+	//bEnableUpdate = false;
 	GetSprite()->SetFlipbook(IdleAnimation);
 	GetSprite()->SetWorldRotation(MoveLeftRotation);
 }
 void AParentCombatCharacter::FaceUp()
 {
-	bEnableUpdate = false;
+	//bEnableUpdate = false;
 	GetSprite()->SetFlipbook(UpIdleAnimation);
 }
 int32 AParentCombatCharacter::GetSpeedStat()
@@ -736,4 +736,45 @@ void AParentCombatCharacter::AcquireTargetFromMouse(int32 GridIndex, ACombatGrid
 			break;
 		}
 	}
+}
+bool AParentCombatCharacter::CheckIfHealthIsZero(AParentCombatCharacter* TargetOfHealthCheck)
+{
+	if (TargetOfHealthCheck->CurrentHealthStat <= 0)
+	{
+		AProject_152GameMode* GameModeRef = Cast<AProject_152GameMode>(GetWorld()->GetAuthGameMode());
+		if (GameModeRef->CharactersInCombat.Contains(TargetOfHealthCheck))
+		{
+			GameModeRef->CharactersInCombat.Remove(TargetOfHealthCheck);
+			Destroy();
+			return true;
+		}
+	}
+	return false;
+}
+//Functions used to check when combat is over or not
+bool AParentCombatCharacter::CheckIfAIDead()
+{
+	AProject_152GameMode* GameModeRef = Cast<AProject_152GameMode>(GetWorld()->GetAuthGameMode());
+
+	for (int i = 0; i < GameModeRef->CharactersInCombat.Num(); i++)
+	{
+		if (GameModeRef->CharactersInCombat[i]->TeamIndex == 1)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+bool AParentCombatCharacter::CheckIfHumanPlayersDead()
+{
+	AProject_152GameMode* GameModeRef = Cast<AProject_152GameMode>(GetWorld()->GetAuthGameMode());
+
+	for (int i = 0; i < GameModeRef->CharactersInCombat.Num(); i++)
+	{
+		if (GameModeRef->CharactersInCombat[i]->TeamIndex == 0)
+		{
+			return false;
+		}
+	}
+	return true;
 }

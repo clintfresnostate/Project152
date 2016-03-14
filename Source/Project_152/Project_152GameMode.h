@@ -27,7 +27,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
-		bool bInCombat = true;
+		bool bInCombat = false;
 
 	//Set this when units are spawned. Keeps track of all the actors/characters in combat
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)

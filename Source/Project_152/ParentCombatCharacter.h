@@ -4,7 +4,7 @@
 
 #include "PaperCharacter.h"
 #include "InventoryItem.h"
-#include "CombatGrid.h"
+//#include "CombatGrid.h"
 #include "ParentCombatCharacter.generated.h"
 
 /**
@@ -203,6 +203,15 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			APaperCharacter* AcquiredTarget;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 			bool SuccessfulAcquiredTarget = false;
+		UFUNCTION(BlueprintCallable, Category = Combat)
+			bool CheckIfHealthIsZero(AParentCombatCharacter* TargetOfHealthCheck);
+		//Team Index 0 for human, 1 for AI
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+			int32 TeamIndex = 0;
+		UFUNCTION(BlueprintCallable, Category = Combat)
+			bool CheckIfAIDead();
+		UFUNCTION(BlueprintCallable, Category = Combat)
+			bool CheckIfHumanPlayersDead();
 
 		/*  STATS  */
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
@@ -213,6 +222,11 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			int32 DamageMaxStat;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 			int32 DamageMinStat;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 CurrentHealthStat = HealthStat;
+		//By Default the Characters are set to AI. Human controlled is set in Combat Grid on Spawn
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			bool bIsHumanPlayer=false;
 		//Used to grab the speed stat
 		int32 GetSpeedStat(void);
 
@@ -232,4 +246,5 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		// Generate the shortest path from starting gridNum to destination gridnum storing it in the PathwayPoints array
 		UFUNCTION(BlueprintCallable, Category = GridMovement)
 			void GeneratePathways(int32 startGridNum, int32 destGridNum, ACombatGrid* CombatGridRef);
+
 };

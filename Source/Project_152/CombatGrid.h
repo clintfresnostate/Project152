@@ -2,6 +2,7 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "ParentCombatCharacter.h"
 #include "CombatGrid.generated.h"
 
 //Have to use forward declaration to avoid circular dependencies
@@ -74,9 +75,21 @@ public:
 	int32 GetMaxY(void);
 	int32 GetMaxX(void);
 
+	//The three human Slots for passing characters through
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CombatInitializer)
+		TSubclassOf<AParentCombatCharacter> HumanSlotOne;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CombatInitializer)
+		TSubclassOf<AParentCombatCharacter> HumanSlotTwo;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CombatInitializer)
+		TSubclassOf<AParentCombatCharacter> HumanSlotThree;
 
-
-
+	//Three Computer slots for setting up the AI
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CombatInitializer)
+		TSubclassOf<AParentCombatCharacter> ComputerSlotOne;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CombatInitializer)
+		TSubclassOf<AParentCombatCharacter> ComputerSlotTwo;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CombatInitializer)
+		TSubclassOf<AParentCombatCharacter> ComputerSlotThree;
 	/*FUNCTIONS*/
 
 	//convert the corner loc to mid point of each tile. Returns the converted array
@@ -96,6 +109,7 @@ protected:
 
 	//By Default-set to true to enable conversion to midpoints. used to prevet use of convert more than once.
 	bool bCanConvertToMidPoints = true;
+	bool SetInitialFacing = true;
 
 	
 
