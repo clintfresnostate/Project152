@@ -744,6 +744,7 @@ bool AParentCombatCharacter::CheckIfHealthIsZero(AParentCombatCharacter* TargetO
 		AProject_152GameMode* GameModeRef = Cast<AProject_152GameMode>(GetWorld()->GetAuthGameMode());
 		if (GameModeRef->CharactersInCombat.Contains(TargetOfHealthCheck))
 		{
+			CombatGrid->GridType[GetGridNum(GetActorLocation(),WorldGridRef)] = 0;
 			GameModeRef->CharactersInCombat.Remove(TargetOfHealthCheck);
 			Destroy();
 			return true;
