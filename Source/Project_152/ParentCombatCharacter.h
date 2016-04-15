@@ -173,7 +173,6 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		UFUNCTION(BlueprintCallable, Category = Inventory)
 			void GiveItem(FInventoryItemStruct Item);
 
-
 		/*   COMBAT   */
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 			int32 NumberOfAttacksRemaining = 1;
@@ -229,6 +228,8 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			bool bIsHumanPlayer=false;
 		//Used to grab the speed stat
 		int32 GetSpeedStat(void);
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			FText Name;
 
 
 		/* TEST Variables for Later Implementation*/
