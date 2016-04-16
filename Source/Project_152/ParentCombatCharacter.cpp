@@ -401,6 +401,14 @@ void AParentCombatCharacter::AttackEvent_Implementation()
 {
 
 }
+void AParentCombatCharacter::SetTurnIndicatorHidden_Implementation()
+{
+
+}
+void AParentCombatCharacter::SetTurnIndicatorVisible_Implementation()
+{
+
+}
 //Make the character face a certain direction
 //Updates are disabled so that the facing direction is not changed. Remember to Re-enable.
 void AParentCombatCharacter::FaceRight()
@@ -468,8 +476,8 @@ void AParentCombatCharacter::TakeTurn()
 }
 void AParentCombatCharacter::RefreshMoves(int32 MovementsAdded, int32 AttacksAdded)
 {
-	NumberOfMovesRemaining += MovementsAdded;
-	NumberOfAttacksRemaining += AttacksAdded;
+	NumberOfMovesRemaining = MovementsAdded;
+	NumberOfAttacksRemaining = AttacksAdded;
 }
 
 //This is used to keep track of the characters position on the grid. This Allows characters to not overlap. Last known position has to be re set back to its original
