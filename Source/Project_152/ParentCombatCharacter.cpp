@@ -39,6 +39,30 @@ AParentCombatCharacter::AParentCombatCharacter()
 	IdleAnimation = ConstructorStatics.IdleAnimationAsset.Get();
 	GetSprite()->SetFlipbook(IdleAnimation);
 
+	//Levels in order starting from level 1
+	ExperienceBrackets.Add(0); //1
+	ExperienceBrackets.Add(100); //2
+	ExperienceBrackets.Add(300); //3
+	ExperienceBrackets.Add(600); //4
+	ExperienceBrackets.Add(1000); //5
+	ExperienceBrackets.Add(1500); //6
+	ExperienceBrackets.Add(2100); //7
+	ExperienceBrackets.Add(2800); //8
+	ExperienceBrackets.Add(3700); //9
+	ExperienceBrackets.Add(4700); //10
+	ExperienceBrackets.Add(5800); //11
+	ExperienceBrackets.Add(7000); //12
+	ExperienceBrackets.Add(8300); //13
+	ExperienceBrackets.Add(9700); //14
+	ExperienceBrackets.Add(11200); //15
+	ExperienceBrackets.Add(12800); //16
+	ExperienceBrackets.Add(14500); //17
+	ExperienceBrackets.Add(16300); //18
+	ExperienceBrackets.Add(18200); //19
+
+	//Non-Linear Jump in Last Level
+	ExperienceBrackets.Add(21000); //20
+
 	//NECESSARY TO ENABLE TICK FUNCTION
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -440,30 +464,42 @@ int32 AParentCombatCharacter::GetSpeedStat()
 void AParentCombatCharacter::TakeTurn()
 {
 	PathwayPoints.Empty();
-	if ((NumberOfMovesRemaining > 0) || (NumberOfAttacksRemaining>0))
+	if (bIsHumanPlayer)
 	{
-		if (bChooseMove)
+		if ((NumberOfMovesRemaining > 0) || (NumberOfAttacksRemaining > 0))
 		{
-			if (NumberOfMovesRemaining > 0)
+			if (bChooseMove)
 			{
-				//Get the chosen position from the player when they click
-				//PathwayPoints.Add(GetGridNum(GetActorLocation(),WorldGridRef));
-				//PathwayPoints.Add(MoveToChosenPosition);
-				GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), MoveToChosenPosition, CombatGrid);
-				MoveToPosition();
-				//NumberOfMovesRemaining--;
+				if (NumberOfMovesRemaining > 0)
+				{
+					//Get the chosen position from the player when they click
+					//PathwayPoints.Add(GetGridNum(GetActorLocation(),WorldGridRef));
+					//PathwayPoints.Add(MoveToChosenPosition);
+					GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), MoveToChosenPosition, CombatGrid);
+					MoveToPosition();
+					//NumberOfMovesRemaining--;
+				}
+				else
+				{
+					bChooseMove = false;
+				}
 			}
-			else
+			if (bChooseAttack)
 			{
-				bChooseMove = false;
+				if (NumberOfAttacksRemaining > 0)
+				{
+					Attack();
+				}
 			}
 		}
-		if (bChooseAttack)
+	}
+	if (!bIsHumanPlayer)
+	{
+		if ((NumberOfMovesRemaining > 0) || (NumberOfAttacksRemaining > 0))
 		{
-			if (NumberOfAttacksRemaining > 0)
-			{
-				Attack();
-			}
+
+			//This is where the AI Functions will go. It is done in ticks and if's because it is called in the tick function
+
 		}
 	}
 	/*
@@ -479,14 +515,48 @@ void AParentCombatCharacter::RefreshMoves(int32 MovementsAdded, int32 AttacksAdd
 	NumberOfMovesRemaining = MovementsAdded;
 	NumberOfAttacksRemaining = AttacksAdded;
 }
+void AParentCombatCharacter::LevelUp()
+{
+	Level++;
 
+	Strength += FMath::RandRange(MinLvlUpIncrease, MaxLvlUpIncrease);
+	Stamina += FMath::RandRange(MinLvlUpIncrease, MaxLvlUpIncrease);
+	Intelligence += FMath::RandRange(MinLvlUpIncrease, MaxLvlUpIncrease);
+	SpeedStat += FMath::RandRange(MinLvlUpIncrease, MaxLvlUpIncrease);
+}
+void AParentCombatCharacter::AddExperience(int32 InputExperience)
+{
+	int32 PartitionAmount = 25;
+	int32 NumberOfIncrements = InputExperience / PartitionAmount;
+	int32 Remainder = InputExperience % 25;
+	for (int i = 1; i <= NumberOfIncrements; i++)
+	{
+		if ((i == NumberOfIncrements) & (InputExperience > 0) & (InputExperience <= 21000))
+		{
+			Experience += Remainder;
+			if (Experience >= ExperienceBrackets[Level])
+				LevelUp();
+		}
+		else if((InputExperience > 0) & (InputExperience <= 21000))
+		{
+			Experience += 25;
+			if (Experience >= ExperienceBrackets[Level])
+				LevelUp();
+		}
+	}
+
+}
 //This is used to keep track of the characters position on the grid. This Allows characters to not overlap. Last known position has to be re set back to its original
 void AParentCombatCharacter::UpdatePositionOnGrid(ACombatGrid* CombatGridRef)
 {
 	int32 CurrentPosition = GetGridNum(GetActorLocation(), WorldGridRef);
 	int32 GridTypeHolder = CombatGridRef->GridType[CurrentPosition];
 	CombatGridRef->GridType[LastKnownPosition] = CombatGridRef->GridType[CurrentPosition];
-	CombatGridRef->GridType[CurrentPosition] = 2;
+
+	if (bIsHumanPlayer)
+		CombatGridRef->GridType[CurrentPosition] = 2;
+	if (!bIsHumanPlayer)
+		CombatGridRef->GridType[CurrentPosition] = 3;
 	LastKnownPosition = CurrentPosition;
 	IndexOfLocationOnGrid = CurrentPosition;
 }
@@ -727,6 +797,75 @@ void AParentCombatCharacter::GetValidRangedAttackTiles(int32 TargetLocation, ACo
 			TilesInRange.Add(PossibleTile);
 		else
 			break;
+	}
+}
+//
+void AParentCombatCharacter::GetValidMovementTiles(int32 TargetLocation, ACombatGrid* CombatGridRef)
+{
+	int32 maxY = CombatGridRef->GetMaxY();
+	int32 maxX = CombatGridRef->GetMaxX();
+	int32 PossibleTile;
+	int32 CurrentPositionTile = GetGridNum(GetActorLocation(), CombatGridRef->WorldLocArray);
+	MovementTilesInRange.Empty();
+
+	int32 temp = MovementRange;
+	//Get all the possible tiles up to the range to the RIGHT and Down
+	for (int i = 0; i <= MovementRange; i++)
+	{
+		PossibleTile = (CurrentPositionTile + i*(maxY));
+		if ((PossibleTile >= 0) & (PossibleTile <= CombatGridRef->WorldLocArray.Num() - 1))
+			MovementTilesInRange.Add(PossibleTile);
+
+		for (int j = 1; j <= temp; j++)
+		{
+			PossibleTile = (CurrentPositionTile + i*(maxY)+j);
+			if ((PossibleTile >= 0) & (PossibleTile <= CombatGridRef->WorldLocArray.Num() - 1))
+				MovementTilesInRange.Add(PossibleTile);
+		}
+		temp--;
+	}
+	temp = MovementRange;
+	//Get all the possible tiles up to the range to the RIGHT and Up
+	for (int i = 0; i <= MovementRange; i++)
+	{
+		temp--;
+		for (int j = 1; j <= temp; j++)
+		{
+			PossibleTile = (CurrentPositionTile - j + i*(maxY));
+			if ((PossibleTile >= 0) & (PossibleTile <= CombatGridRef->WorldLocArray.Num() - 1))
+				MovementTilesInRange.Add(PossibleTile);
+		}
+		temp--;
+	}
+	temp = MovementRange;
+	//Get all the possible tiles up to the range to the LEFT and Up
+	for (int i = 0; i <= MovementRange; i++)
+	{
+		PossibleTile = (CurrentPositionTile - i*(maxY));
+		if ((PossibleTile >= 0) & (PossibleTile <= CombatGridRef->WorldLocArray.Num() - 1))
+			MovementTilesInRange.Add(PossibleTile);
+
+		temp--;
+		for (int j = 1; j <= temp; j++)
+		{
+			PossibleTile = (CurrentPositionTile - j - i*(maxY));
+			if ((PossibleTile >= 0) & (PossibleTile <= CombatGridRef->WorldLocArray.Num() - 1))
+				MovementTilesInRange.Add(PossibleTile);
+		}
+		temp--;
+	}
+	temp = MovementRange;
+	//Get all the possible tiles up to the range to the LEFT and Down
+	for (int i = 0; i <= MovementRange; i++)
+	{
+		temp--;
+		for (int j = 1; j <= temp; j++)
+		{
+			PossibleTile = (CurrentPositionTile + j - i*(maxY));
+			if ((PossibleTile >= 0) & (PossibleTile <= CombatGridRef->WorldLocArray.Num() - 1))
+				MovementTilesInRange.Add(PossibleTile);
+		}
+		temp--;
 	}
 }
 //This checks the tile you are attacking for a target by comparing the selected grid to each characters index value which holds their current position

@@ -105,12 +105,14 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 
 		UFUNCTION(BlueprintCallable, Category = GridMovement)
 		TArray<FVector> GetLocationOfTilesWithinOneUnit(int32 GridNum, TArray<FVector> WorldGridRef, ACombatGrid* CombatGridRef);
-		UFUNCTION(BlueprintCallable, Category = GridMovement)
-			TArray<int32> getTilesWithin(int32 GridNum, int32 range, bool considerDiagonals);
+		
 		
 		
 	public:
 		AParentCombatCharacter();
+
+		UFUNCTION(BlueprintCallable, Category = GridMovement)
+			TArray<int32> getTilesWithin(int32 GridNum, int32 range, bool considerDiagonals);
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Spawning)
 			FVector StartingSpawnLocation;
@@ -179,6 +181,8 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			int32 NumberOfAttacksRemaining = 1;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 			int32 NumberOfMovesRemaining = 1;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 NumberOfTilesCanMove = MovementRange;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 			bool bIsAttacking = false;
 		UFUNCTION(BlueprintCallable, Category = Combat)
@@ -193,10 +197,14 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			int32 AttackRange = 8;
 		UFUNCTION(BlueprintCallable, Category = GridMovement)
 			void GetValidRangedAttackTiles(int32 TargetLocation, ACombatGrid* CombatGridRef);
+		UFUNCTION(BlueprintCallable, Category = GridMovement)
+			void GetValidMovementTiles(int32 TargetLocation, ACombatGrid* CombatGridRef);
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 			FVector AttackTargetLocation;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 			TArray<int32> TilesInRange;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+			TArray<int32> MovementTilesInRange;
 		UFUNCTION(BlueprintCallable, Category = GridMovement)
 			void AcquireTargetFromMouse(int32 GridIndex, ACombatGrid* CombatGridRef);
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
@@ -230,13 +238,35 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 
 		/*  STATS  */
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
-			int32 SpeedStat;
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 			int32 HealthStat = 200;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 			int32 DamageMaxStat;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 			int32 DamageMinStat;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 MovementRange;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 Level = 1;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 Experience = 0;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 MinLvlUpIncrease = 1;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 MaxLvlUpIncrease = 1;
+		//Used to find out what level it is from experience
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			TArray<int32> ExperienceBrackets;
+
+		//COMBAT STATS///
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 SpeedStat = 5;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 Strength = 5;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 Stamina = 5;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 Intelligence = 5;
+
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 			int32 CurrentHealthStat = HealthStat;
 		//By Default the Characters are set to AI. Human controlled is set in Combat Grid on Spawn
@@ -264,7 +294,10 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			void RefreshMoves(int32 MovementsAdded, int32 AttacksAdded);
 		UFUNCTION(BlueprintCallable, Category = Combat)
 			void UpdatePositionOnGrid(ACombatGrid* CombatGridRef);
-
+		UFUNCTION(BlueprintCallable, Category = Level)
+			void LevelUp();
+		UFUNCTION(BlueprintCallable, Category = Level)
+			void AddExperience(int32 InputExperience);
 		// Generate the shortest path from starting gridNum to destination gridnum storing it in the PathwayPoints array
 		UFUNCTION(BlueprintCallable, Category = GridMovement)
 			void GeneratePathways(int32 startGridNum, int32 destGridNum, ACombatGrid* CombatGridRef);

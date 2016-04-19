@@ -120,9 +120,15 @@ public:
 		bool bPlayerChoseAttack = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 		bool bEnableIndicators = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		bool bEnableMovementIndicators = false;
 
 	UFUNCTION(BlueprintNativeEvent, Category = Combat)
 		void SpawnIndicators();
+	UFUNCTION(BlueprintNativeEvent, Category = Combat)
+		void SpawnMovementIndicators();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 		TArray<int32> SpawnIndicatorLocations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		TArray<int32> SpawnMovementIndicatorLocations;
 };

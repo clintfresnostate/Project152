@@ -74,7 +74,8 @@ void AProject_152GameMode::Tick(float DeltaTime)
 		}
 		if (bNextTurn)
 		{
-			CharactersInCombat[TurnIncrement % CharactersInCombat.Num()]->RefreshMoves(1,1);
+			CharactersInCombat[TurnIncrement % CharactersInCombat.Num()]->NumberOfTilesCanMove = CharactersInCombat[TurnIncrement % CharactersInCombat.Num()]->MovementRange;
+			CharactersInCombat[TurnIncrement % CharactersInCombat.Num()]->RefreshMoves(1, 1);
 			CharactersInCombat[TurnIncrement % CharactersInCombat.Num()]->SetTurnIndicatorHidden();
 			TurnIncrement++;
 			bNextTurn = false;

@@ -5,6 +5,7 @@
 #include "PaperFlipbookComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/ArrowComponent.h"
+#include "Project_152GameMode.h"
 
 
 
@@ -113,25 +114,33 @@ void AProject_152Character::Tick(float DeltaSeconds)
 	
 	UpdateCharacter();	
 	PlayerControllerRef = GetWorld()->GetFirstPlayerController();
-	if (bMyTurnInCombat)
-	{
-		PlayerControllerRef->bShowMouseCursor = true;
-		PlayerControllerRef->bEnableClickEvents = true;
-		PlayerControllerRef->bEnableMouseOverEvents = true;
+	AProject_152GameMode* GameModeRef = Cast<AProject_152GameMode>(GetWorld()->GetAuthGameMode());
 
-		if (bEnableIndicators)
+	if (GameModeRef->bInCombat)
+	{
+		if (GameModeRef->CharactersInCombat[(GameModeRef->TurnIncrement) % (GameModeRef->CharactersInCombat.Num())]->bIsHumanPlayer)
 		{
-			SpawnIndicators();
+			PlayerControllerRef->bShowMouseCursor = true;
+			PlayerControllerRef->bEnableClickEvents = true;
+			PlayerControllerRef->bEnableMouseOverEvents = true;
+
+			if (bEnableIndicators)
+			{
+				SpawnIndicators();
+			}
+			if (bEnableMovementIndicators)
+			{
+				SpawnMovementIndicators();
+			}
+		}
+		if (!GameModeRef->CharactersInCombat[(GameModeRef->TurnIncrement) % (GameModeRef->CharactersInCombat.Num())]->bIsHumanPlayer)
+		{
+			PlayerControllerRef->bShowMouseCursor = false;
+			PlayerControllerRef->bEnableClickEvents = false;
+			PlayerControllerRef->bEnableMouseOverEvents = false;
 		}
 	}
-	else
-	{
-		PlayerControllerRef->bShowMouseCursor = false;
-		PlayerControllerRef->bEnableClickEvents = false;
-		PlayerControllerRef->bEnableMouseOverEvents = false;
-	}
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -261,6 +270,10 @@ void AProject_152Character::SetWithinItemRadius(bool bIsInRadius, AInventoryItem
 }
 //Dummy Event used to spawn the target indicators
 void AProject_152Character::SpawnIndicators_Implementation()
+{
+
+}
+void AProject_152Character::SpawnMovementIndicators_Implementation()
 {
 
 }
