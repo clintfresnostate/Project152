@@ -105,7 +105,8 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 
 		UFUNCTION(BlueprintCallable, Category = GridMovement)
 		TArray<FVector> GetLocationOfTilesWithinOneUnit(int32 GridNum, TArray<FVector> WorldGridRef, ACombatGrid* CombatGridRef);
-
+		UFUNCTION(BlueprintCallable, Category = GridMovement)
+			TArray<int32> getTilesWithin(int32 GridNum, int32 range, bool considerDiagonals);
 		
 		
 	public:
@@ -215,6 +216,16 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			void SetTurnIndicatorHidden();
 		UFUNCTION(BlueprintNativeEvent, Category = Combat)
 			void SetTurnIndicatorVisible();
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+			int32 maxNumberOfMoves;
+		// search through the combat grid and return the locations that the AI could attack to generate damage
+		// returns the grid locations sorted by most damage, e.g. index 0 will generate most damage, duplicates possible
+		UFUNCTION(BlueprintCallable, Category = Combat)
+			void AIGenerateTargetAndPath();
+		// returns the total damage done at grid number passed in, based on spash damage, used by AI
+		// Assume GridType = 2 -> Player Characters, GridType = 3 -> AI
+		UFUNCTION(BlueprintCallable, Category = Combat)
+			int32 DamageDoneAt(int32 targetGridNum);
 
 
 		/*  STATS  */
@@ -235,7 +246,12 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		int32 GetSpeedStat(void);
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 			FText Name;
-
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 SplashRange;
+		// range between 0 - 1, 0 -> no damage lost, 0.5 -> half damage lost, 1 -> all damage lost
+		// n tiles away = original damage * (1 - n * splashDamage reduction)
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			float SplashDamageReduction;
 
 		/* TEST Variables for Later Implementation*/
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)

@@ -787,3 +787,219 @@ bool AParentCombatCharacter::CheckIfHumanPlayersDead()
 	}
 	return true;
 }
+
+void AParentCombatCharacter::AIGenerateTargetAndPath()
+{
+	int32 i;
+	struct gridNumAndDamage {
+		int32 gridID;	// represents the tile grid Number
+		int32 damage;	// represents the total damage possible if a at gridID
+	};
+
+	TArray<gridNumAndDamage> attackTiles;
+
+	for (i = 0; i < CombatGrid->GridType.Num(); i++)
+	{
+		int32 damage = DamageDoneAt(i);
+		if (damage > 0)
+		{
+			gridNumAndDamage p;
+			p.gridID = i;
+			p.damage = damage;
+			attackTiles.Add(p);
+		}
+	}
+
+	for (i = 0; i < attackTiles.Num() - 1; i++)
+	{
+		for (int32 j = i + 1; j > 0; j--)
+		{
+			if (attackTiles[j].damage > attackTiles[j - 1].damage)
+			{
+				attackTiles.Swap(j, j - 1);
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+	// big for loop expaning each component of attackTiles array here instead of what I have below
+	TArray<TArray<int32>> damageArray;
+
+	TArray<int32> temp;
+	temp.Add(attackTiles[0].gridID);
+	for (i = 1; i < attackTiles.Num(); i++)
+	{
+		if (attackTiles[i].damage == attackTiles[i - 1].damage)
+		{
+			temp.Add(attackTiles[i].gridID);
+		}
+		else
+		{
+			damageArray.Add(temp);
+			temp.Empty();
+			temp.Add(attackTiles[i].gridID);
+		}
+	}
+	if (temp.Num() > 0)
+		damageArray.Add(temp);
+
+	for (i = 0; i < damageArray.Num(); i++)
+	{
+		TArray<int32> gridNumsToAttackFrom;
+		for (int32 j = 0; j < damageArray[i].Num(); j++)
+		{
+			TArray<int32> t = getTilesWithin(damageArray[i][j], this->AttackRange, false);
+
+			for (int32 k = 0; k < t.Num(); k++)
+			{
+				gridNumsToAttackFrom.Add(t[k]);
+			}
+		}
+		
+		TArray<int32> leastPath;
+		//int32 leastGridNum;
+		for (int32 x = 0; x < gridNumsToAttackFrom.Num(); x++)
+		{
+			GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), gridNumsToAttackFrom[x], CombatGrid);
+			if (this->PathwayPoints.Num() < leastPath.Num() || x == 0)
+			{
+				leastPath = this->PathwayPoints;
+				// leastGridNum = gridNumsToAttackFrom, have to backtrack this.... don't know target like this, lost it
+			}
+		}
+
+		if (leastPath.Num() <= this->maxNumberOfMoves)
+		{
+			this->PathwayPoints = leastPath;
+			//set the target grid num
+			break;
+		}
+	}
+
+	// check if no one was in range
+
+}
+
+int32 AParentCombatCharacter::DamageDoneAt(int32 targetGridNum)
+{
+	int32 totalDamage = 0;
+	
+	TArray<int32> tilesInSplashkRange = getTilesWithin(targetGridNum, this->AttackRange, true);
+	
+	if (CombatGrid->GridType[targetGridNum] == 2)
+		totalDamage += DamageMaxStat;
+
+	for (int32 i = 0; i < tilesInSplashkRange.Num(); i++)
+	{
+		if (CombatGrid->GridType[tilesInSplashkRange[i]] == 2)
+		{
+			int32 horizontalDistance = tilesInSplashkRange[i] / CombatGrid->GetMaxY() - targetGridNum / CombatGrid->GetMaxY();
+			if (horizontalDistance < 0)
+				horizontalDistance *= -1;
+			int32 verticalDistance = tilesInSplashkRange[i] % CombatGrid->GetMaxY() - targetGridNum % CombatGrid->GetMaxY();
+			if (verticalDistance < 0)
+				verticalDistance *= -1;
+
+			int32 max = (horizontalDistance > verticalDistance) ? horizontalDistance : verticalDistance;
+			totalDamage += DamageMaxStat - ((1.0 - (max * SplashDamageReduction)) * DamageMaxStat );
+		}
+	}
+	
+	return totalDamage;
+}
+
+TArray<int32> AParentCombatCharacter::getTilesWithin(int32 GridNum, int32 range, bool considerDiagonals)
+{
+	TArray<int32> result;
+	int32 maxX = CombatGrid->GetMaxX();
+	int32 maxY = CombatGrid->GetMaxY();
+	TArray<int32> leftAndRight;
+	if (considerDiagonals)
+	{
+		leftAndRight.Add(GridNum);
+	}
+
+	int32 i = 1;
+	int32 curr = GridNum + maxY;
+
+	while (i <= range)
+	{
+		if ( (curr / maxY) < maxX)
+		{
+			leftAndRight.Add(curr);
+			curr = curr + maxY;
+			i++;
+		}
+		else
+		{
+			break;
+		}
+	}
+	i = 1;
+	curr = GridNum - maxY;
+	while (i <= range)
+	{
+		if ((curr / maxY) >= 0)
+		{
+			leftAndRight.Add(curr);
+			curr = curr - maxY;
+			i++;
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	if (!considerDiagonals)
+	{
+		for (int32 i = 0; i < leftAndRight.Num(); i++)
+		{
+			result.Add(leftAndRight[i]);
+		}
+		leftAndRight.Empty();
+		leftAndRight.Add(GridNum);
+	}
+
+	for (int k = 0; k < leftAndRight.Num(); k++)
+	{
+		if (considerDiagonals)
+		{
+			result.Add(leftAndRight[k]);
+		}
+		i = 1;
+		curr = leftAndRight[k] - 1;
+		while (i <= range)
+		{
+			if (curr % maxY >= 0)
+			{
+				result.Add(curr);
+				curr = curr - 1;
+				i++;
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		curr = leftAndRight[k] + 1;
+		i = 1;
+		while (i <= range)
+		{
+			if (curr % maxY < maxY)
+			{
+				result.Add(curr);
+				curr = curr + 1;
+				i++;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+	return result;
+}
