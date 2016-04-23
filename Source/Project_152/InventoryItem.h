@@ -31,6 +31,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
 		int32 SellPrice;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
+		int32 ItemID;
+
 	bool operator==(FInventoryItemStruct const& Other) const
 	{
 
@@ -61,8 +64,11 @@ public:
 
 
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Item)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
 		FInventoryItemStruct ItemInfo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
+		bool isParentCombatChar = false;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Item)
 		bool bDestroyAfterUse;// Should the item actor be destroyed after it has been used?

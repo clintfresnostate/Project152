@@ -208,9 +208,9 @@ void AProject_152Character::UpdateCharacter()
 void AProject_152Character::GiveItem(FInventoryItemStruct Item)
 {
 
-	int32 idx = InventoryArray.Find(Item); // Grab the index of the item
+	//int32 idx = InventoryArray.Find(Item); // Grab the index of the item
 
-	if (!InventoryArray.IsValidIndex(idx)) // If the index is NOT valid it means the item isnt in our inventory / array
+	if (InventoryArray.Num()<=16) // If the index is NOT valid it means the item isnt in our inventory / array
 	{
 		//Then the item can be added!
 		InventoryArray.Add(Item);
@@ -223,8 +223,8 @@ void AProject_152Character::GiveItem(FInventoryItemStruct Item)
 void AProject_152Character::DropItem(FInventoryItemStruct Item)
 {
 
-	AInventoryItem* WorldItem = GetWorld()->SpawnActor<AInventoryItem>(Item.ItemClass, GetActorLocation(), FRotator(0, 0, 0)); // Spawn the item in the world
-	WorldItem->ItemInfo = Item; // Assign the item info of the newly spawned item in the world to the one we dropped
+	//AInventoryItem* WorldItem = GetWorld()->SpawnActor<AInventoryItem>(Item.ItemClass, GetActorLocation(), FRotator(0, 0, 0)); // Spawn the item in the world
+	//WorldItem->ItemInfo = Item; // Assign the item info of the newly spawned item in the world to the one we dropped
 	int32 idx = InventoryArray.Find(Item); // Grab the index of the item we want to drop
 
 

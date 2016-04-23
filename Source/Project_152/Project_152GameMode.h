@@ -50,4 +50,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 		bool bDoneWithAttack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+		int32 UniqueItemID = 0;
 };

@@ -59,12 +59,9 @@ protected:
 	// End of APawn interface
 
 	//Inventory, Array of FInventoryItemStructs
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Inventory)
-		TArray<FInventoryItemStruct> InventoryArray;
+	
 
-	//Drops the item
-	UFUNCTION(BlueprintCallable, Category = Inventory)
-		void DropItem(FInventoryItemStruct Item);
+	
 
 	//Uses the item and calls the blueprint event
 	UFUNCTION(BlueprintCallable, Category = Inventory)
@@ -80,17 +77,28 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Inventory)
 		AInventoryItem* FocusedItem; // Item that is within our radius
 
-	UFUNCTION(BlueprintCallable, Category = Inventory)
-		void UpdateInventory();
+
 
 	APlayerController* PlayerControllerRef;
 
 public:
 	AProject_152Character();
 
+	//Drops the item
+	UFUNCTION(BlueprintCallable, Category = Inventory)
+		void DropItem(FInventoryItemStruct Item);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
+		TArray<FInventoryItemStruct> InventoryArray;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
+		TArray<FInventoryItemStruct> ParentCombatCharacterInventoryArray;
+
 	//Adds the item to the inventory given its FInventoryItemStruct or "data"
 	UFUNCTION(BlueprintCallable, Category = Inventory)
 		void GiveItem(FInventoryItemStruct Item);
+	UFUNCTION(BlueprintCallable, Category = Inventory)
+		void UpdateInventory();
 
 	/** Returns SideViewCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }
