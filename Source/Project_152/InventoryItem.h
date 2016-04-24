@@ -18,6 +18,10 @@ public:
 	// Item class, used to spawn the item in the world when its dropped
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemInfo)
 		TSubclassOf<class AInventoryItem> ItemClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemInfo)
+		TSubclassOf<class AParentCombatCharacter> ClassOfCombatChar;
+
 	// Item Icon that will be displayed in the slot
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemInfo)
 		UTexture2D* ItemImage;
@@ -33,6 +37,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
 		int32 ItemID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
+		int32 ItemSlotIndexHolder;
 
 	bool operator==(FInventoryItemStruct const& Other) const
 	{
@@ -61,7 +68,6 @@ class PROJECT_152_API AInventoryItem : public AStaticMeshActor
 		//AInventoryItem(const FObjectInitializer& ObjectInitializer);
 
 public:
-
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
