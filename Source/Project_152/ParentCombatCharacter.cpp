@@ -276,7 +276,7 @@ void AParentCombatCharacter::MoveToPosition()
 		{
 			//Calling Dummy Function to allow BP to handle the Timeline
 			MoveToGridEvent();
-
+	
 			bInMovement = true;
 		}
 		
@@ -499,7 +499,9 @@ void AParentCombatCharacter::TakeTurn()
 		{
 
 			//This is where the AI Functions will go. It is done in ticks and if's because it is called in the tick function
-
+			//AIGenerateTargetAndPath();
+			//MoveToPosition();
+			//Attack();
 		}
 	}
 	/*
@@ -964,60 +966,64 @@ void AParentCombatCharacter::AIGenerateTargetAndPath()
 		}
 	}
 	// big for loop expaning each component of attackTiles array here instead of what I have below
-	TArray<TArray<int32>> damageArray;
-
-	TArray<int32> temp;
-	temp.Add(attackTiles[0].gridID);
-	for (i = 1; i < attackTiles.Num(); i++)
+	bool selectedTarget = false;
+	for (int32 i = 0; i < attackTiles.Num(); i++)
 	{
-		if (attackTiles[i].damage == attackTiles[i - 1].damage)
-		{
-			temp.Add(attackTiles[i].gridID);
-		}
-		else
-		{
-			damageArray.Add(temp);
-			temp.Empty();
-			temp.Add(attackTiles[i].gridID);
-		}
-	}
-	if (temp.Num() > 0)
-		damageArray.Add(temp);
+		TArray<gridNumAndDamage> sameDamageTiles;
+		sameDamageTiles.Add(attackTiles[i]);
 
-	for (i = 0; i < damageArray.Num(); i++)
-	{
-		TArray<int32> gridNumsToAttackFrom;
-		for (int32 j = 0; j < damageArray[i].Num(); j++)
+		while (i < (attackTiles.Num() - 1) && attackTiles[i + 1].damage == attackTiles[i].damage)
 		{
-			TArray<int32> t = getTilesWithin(damageArray[i][j], this->AttackRange, false);
+			i++;
+			sameDamageTiles.Add(attackTiles[i]);
+		}
 
-			for (int32 k = 0; k < t.Num(); k++)
+		TArray<int32> tilesInRange;
+		int32 lowestPathTile = -1;
+		int32 targetGrid = -1;
+		int32 lowestPath = 999;
+		for (int32 j = 0; j < sameDamageTiles.Num(); j++)
+		{
+			TArray<int32> tilesInRange = getTilesWithin(sameDamageTiles[j].gridID, this->AttackRange, false);
+			for (int32 k = 0; k < tilesInRange.Num(); k++)
 			{
-				gridNumsToAttackFrom.Add(t[k]);
+				GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), tilesInRange[k], CombatGrid);
+				if (PathwayPoints.Num() < lowestPath)
+				{
+					lowestPathTile = tilesInRange[k];
+					targetGrid = sameDamageTiles[j].gridID;
+					lowestPath = PathwayPoints.Num();
+				}
 			}
 		}
-		
-		TArray<int32> leastPath;
-		//int32 leastGridNum;
-		for (int32 x = 0; x < gridNumsToAttackFrom.Num(); x++)
+		if (lowestPath <= maxNumberOfMoves)
 		{
-			GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), gridNumsToAttackFrom[x], CombatGrid);
-			if (this->PathwayPoints.Num() < leastPath.Num() || x == 0)
-			{
-				leastPath = this->PathwayPoints;
-				// leastGridNum = gridNumsToAttackFrom, have to backtrack this.... don't know target like this, lost it
-			}
-		}
-
-		if (leastPath.Num() <= this->maxNumberOfMoves)
-		{
-			this->PathwayPoints = leastPath;
-			//set the target grid num
+			selectedTarget = true;
+			 // set the attack to targetGRid;
+			GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), lowestPathTile, CombatGrid);
 			break;
 		}
 	}
 
 	// check if no one was in range
+	if (!selectedTarget)
+	{
+		int32 closest = 999999;
+		int32 closestIndex;
+		for (int32 i = 0; i < CombatGrid->GridType.Num(); i++)
+		{
+			if (CombatGrid->GridType[i] == 2)
+			{
+				GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), i, CombatGrid);
+				if (PathwayPoints.Num() < closest)
+				{
+					closestIndex = i;
+					closest = PathwayPoints.Num();
+				}
+			}
+		}
+		GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), closestIndex, CombatGrid);
+	}
 
 }
 
@@ -1032,7 +1038,7 @@ int32 AParentCombatCharacter::DamageDoneAt(int32 targetGridNum)
 
 	for (int32 i = 0; i < tilesInSplashkRange.Num(); i++)
 	{
-		if (CombatGrid->GridType[tilesInSplashkRange[i]] == 2)
+		if (tilesInSplashkRange[i] >= 0 && tilesInSplashkRange[i] < CombatGrid->GridType.Num() && CombatGrid->GridType[tilesInSplashkRange[i]] == 2)
 		{
 			int32 horizontalDistance = tilesInSplashkRange[i] / CombatGrid->GetMaxY() - targetGridNum / CombatGrid->GetMaxY();
 			if (horizontalDistance < 0)
@@ -1065,7 +1071,7 @@ TArray<int32> AParentCombatCharacter::getTilesWithin(int32 GridNum, int32 range,
 
 	while (i <= range)
 	{
-		if ( (curr / maxY) < maxX)
+		if ( curr < CombatGrid->GridType.Num() )
 		{
 			leftAndRight.Add(curr);
 			curr = curr + maxY;
@@ -1080,7 +1086,7 @@ TArray<int32> AParentCombatCharacter::getTilesWithin(int32 GridNum, int32 range,
 	curr = GridNum - maxY;
 	while (i <= range)
 	{
-		if ((curr / maxY) >= 0)
+		if (curr >= 0)
 		{
 			leftAndRight.Add(curr);
 			curr = curr - maxY;
