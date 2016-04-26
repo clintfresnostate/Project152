@@ -502,10 +502,10 @@ void AParentCombatCharacter::TakeTurn()
 			
 		if (NumberOfMovesRemaining > 0)
 		{
-			//AIGenerateTargetAndPath();
+			AIGenerateTargetAndPath();
 			// Maybe error with running two generate pathways?
 			// realized even one like we have below doesnt work...maybe something to do with bChooseMove?
-			// GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), 0, CombatGrid);
+			GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), 5, CombatGrid);
 			
 			
 			/*PathwayPoints.Add(34);
@@ -518,13 +518,15 @@ void AParentCombatCharacter::TakeTurn()
 
 			bChooseMove = true;
 			MoveToPosition();
+		
 		}
-		if(NumberOfAttacksRemaining > 0)
+		AProject_152GameMode* GameModeRef = Cast<AProject_152GameMode>(GetWorld()->GetAuthGameMode());
+		if((NumberOfAttacksRemaining > 0) && (GameModeRef->bDoneWithMove))
 		{//UE_LOG(LogTemp, Warning, TEXT("%d"), PathwayPoints[0]);
 
 			bChooseAttack = true;
-			if (bHasTarget)
-				Attack();
+			//if (bHasTarget)
+				//Attack();
 
 
 			//This is so the AI can skip turns when no attack, only need this for testing
@@ -673,7 +675,7 @@ void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGrid
 		if (currentLocationRemainder != 0)
 		{
 			nextLocation = currentLocation - 1;
-			if (CombatGridRef->GridType[nextLocation] == 0 && !visitedLocations.Contains(nextLocation))
+			if ((CombatGridRef->GridType[nextLocation] == 0) && (!visitedLocations.Contains(nextLocation)))
 			{
 				nextHorizontalMovements = destGridNum / maxY - nextLocation / maxY;
 				nextVerticalMovements = destGridNum % maxY - nextLocation % maxY;

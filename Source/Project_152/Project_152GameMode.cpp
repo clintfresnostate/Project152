@@ -78,6 +78,10 @@ void AProject_152GameMode::Tick(float DeltaTime)
 			CharactersInCombat[TurnIncrement % CharactersInCombat.Num()]->RefreshMoves(1, 1);
 			CharactersInCombat[TurnIncrement % CharactersInCombat.Num()]->SetTurnIndicatorHidden();
 			TurnIncrement++;
+			if (!CharactersInCombat[TurnIncrement % CharactersInCombat.Num()]->bIsHumanPlayer)
+			{
+				CharactersInCombat[TurnIncrement % CharactersInCombat.Num()]->TakeTurn();
+			}
 			bNextTurn = false;
 		}
 	}
