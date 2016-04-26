@@ -144,4 +144,6 @@ public:
 		void SaveMainCharacter();
 	UFUNCTION(BlueprintCallable, Category = Saving)
 		void LoadMainCharacter();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Loading)
+		AProject_152Character* PlayerCharacterToUse;
 };
