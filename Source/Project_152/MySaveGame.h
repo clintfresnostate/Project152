@@ -19,10 +19,10 @@ public:
 		AProject_152Character* mainPlayer;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
-		FString SaveSlotName;
+		FString SaveSlotName = "TEST";
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
-		int32 UserIndex;
+		int32 UserIndex = 0;
 
 	UMySaveGame();
 };
