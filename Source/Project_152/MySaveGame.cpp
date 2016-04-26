@@ -1,8 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Project_152.h"
 #include "MySaveGame.h"
 
-
-
+UMySaveGame::UMySaveGame()
+{
+	FString SaveSlotName = TEXT("TestSaveSlot");
+	int UserIndex = 0;
+}
 

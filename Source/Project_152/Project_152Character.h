@@ -139,4 +139,9 @@ public:
 		TArray<int32> SpawnIndicatorLocations;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 		TArray<int32> SpawnMovementIndicatorLocations;
+
+	UFUNCTION(BlueprintCallable, Category = Loading)
+		void SaveMainCharacter();
+	UFUNCTION(BlueprintCallable, Category = Saving)
+		void LoadMainCharacter();
 };

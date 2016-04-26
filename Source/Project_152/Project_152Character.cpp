@@ -6,6 +6,7 @@
 #include "Components/TextRenderComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Project_152GameMode.h"
+#include "MySaveGame.h"
 
 
 
@@ -276,4 +277,24 @@ void AProject_152Character::SpawnIndicators_Implementation()
 void AProject_152Character::SpawnMovementIndicators_Implementation()
 {
 
+}
+
+/////////////////////////////////////////////////////////////////
+// Saving/Loading Character
+
+void AProject_152Character::SaveMainCharacter()
+{
+	AProject_152Character* newChar = new AProject_152Character();
+
+	FString PlayerName = TEXT("MainPlayer");
+	UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
+	SaveGameInstance->mainPlayer = newChar;
+	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SaveSlotName, SaveGameInstance->UserIndex);
+}
+
+void AProject_152Character::LoadMainCharacter()
+{
+	UMySaveGame* LoadGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
+	LoadGameInstance = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
+	AProject_152Character* PlayerCharacterToUse = LoadGameInstance->mainPlayer;
 }
