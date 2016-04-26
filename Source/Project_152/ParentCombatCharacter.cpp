@@ -503,9 +503,19 @@ void AParentCombatCharacter::TakeTurn()
 		if (NumberOfMovesRemaining > 0)
 		{
 			//AIGenerateTargetAndPath();
-			PathwayPoints.Add(129);
-			PathwayPoints.Add(120);
-			PathwayPoints.Add(111);
+			// Maybe error with running two generate pathways?
+			// realized even one like we have below doesnt work...maybe something to do with bChooseMove?
+			// GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), 0, CombatGrid);
+			
+			
+			/*PathwayPoints.Add(34);
+			TArray<int32> q = getTilesWithin(8, 3, false);
+			for (int32 i = 0; i < q.Num(); i++)
+			{
+				PathwayPoints.Add(q[i]);
+				PathwayPoints.Add(34);
+			}*/
+
 			bChooseMove = true;
 			MoveToPosition();
 		}
@@ -961,7 +971,7 @@ void AParentCombatCharacter::AIGenerateTargetAndPath()
 
 	TArray<gridNumAndDamage> attackTiles;
 
-	for (i = 0; i < CombatGrid->GridType.Num(); i++)
+	for (i = 0; i < CombatGrid->GetMaxX() * CombatGrid->GetMaxY(); i++)
 	{
 		int32 damage = DamageDoneAt(i);
 		if (damage > 0)
@@ -972,7 +982,7 @@ void AParentCombatCharacter::AIGenerateTargetAndPath()
 			attackTiles.Add(p);
 		}
 	}
-
+	
 	for (i = 0; i < attackTiles.Num() - 1; i++)
 	{
 		for (int32 j = i + 1; j > 0; j--)
@@ -993,14 +1003,13 @@ void AParentCombatCharacter::AIGenerateTargetAndPath()
 	{
 		TArray<gridNumAndDamage> sameDamageTiles;
 		sameDamageTiles.Add(attackTiles[i]);
-
+		
 		while (i < (attackTiles.Num() - 1) && attackTiles[i + 1].damage == attackTiles[i].damage)
 		{
 			i++;
 			sameDamageTiles.Add(attackTiles[i]);
 		}
 
-		TArray<int32> tilesInRange;
 		int32 lowestPathTile = -1;
 		int32 targetGrid = -1;
 		int32 lowestPath = 999;
@@ -1009,6 +1018,7 @@ void AParentCombatCharacter::AIGenerateTargetAndPath()
 			TArray<int32> tilesInRange = getTilesWithin(sameDamageTiles[j].gridID, this->AttackRange, false);
 			for (int32 k = 0; k < tilesInRange.Num(); k++)
 			{
+				PathwayPoints.Empty();
 				GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), tilesInRange[k], CombatGrid);
 				if (PathwayPoints.Num() < lowestPath)
 				{
@@ -1023,6 +1033,7 @@ void AParentCombatCharacter::AIGenerateTargetAndPath()
 			selectedTarget = true;
 			AttackTargetLocation = CombatGrid->WorldLocArray[targetGrid];
 			 // set the attack to targetGRid;
+			PathwayPoints.Empty();
 			GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), lowestPathTile, CombatGrid);
 			bHasTarget = true;
 			break;
@@ -1034,7 +1045,7 @@ void AParentCombatCharacter::AIGenerateTargetAndPath()
 	{
 		int32 closest = 999999;
 		int32 closestIndex;
-		for (int32 i = 0; i < CombatGrid->GridType.Num(); i++)
+		for (int32 i = 0; i < CombatGrid->GetMaxX() * CombatGrid->GetMaxY(); i++)
 		{
 			if (CombatGrid->GridType[i] == 2)
 			{
@@ -1048,7 +1059,7 @@ void AParentCombatCharacter::AIGenerateTargetAndPath()
 		}
 		GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), closestIndex, CombatGrid);
 	}
-
+	
 }
 
 int32 AParentCombatCharacter::DamageDoneAt(int32 targetGridNum)
@@ -1062,7 +1073,7 @@ int32 AParentCombatCharacter::DamageDoneAt(int32 targetGridNum)
 
 	for (int32 i = 0; i < tilesInSplashkRange.Num(); i++)
 	{
-		if (tilesInSplashkRange[i] >= 0 && tilesInSplashkRange[i] < CombatGrid->GridType.Num() && CombatGrid->GridType[tilesInSplashkRange[i]] == 2)
+		if (CombatGrid->GridType[tilesInSplashkRange[i]] == 2)
 		{
 			int32 horizontalDistance = tilesInSplashkRange[i] / CombatGrid->GetMaxY() - targetGridNum / CombatGrid->GetMaxY();
 			if (horizontalDistance < 0)
@@ -1095,7 +1106,7 @@ TArray<int32> AParentCombatCharacter::getTilesWithin(int32 GridNum, int32 range,
 
 	while (i <= range)
 	{
-		if ( curr < CombatGrid->GridType.Num() )
+		if ( curr / maxY < maxX )
 		{
 			leftAndRight.Add(curr);
 			curr = curr + maxY;
@@ -1121,7 +1132,6 @@ TArray<int32> AParentCombatCharacter::getTilesWithin(int32 GridNum, int32 range,
 			break;
 		}
 	}
-
 	if (!considerDiagonals)
 	{
 		for (int32 i = 0; i < leftAndRight.Num(); i++)
@@ -1131,7 +1141,7 @@ TArray<int32> AParentCombatCharacter::getTilesWithin(int32 GridNum, int32 range,
 		leftAndRight.Empty();
 		leftAndRight.Add(GridNum);
 	}
-
+	
 	for (int k = 0; k < leftAndRight.Num(); k++)
 	{
 		if (considerDiagonals)
@@ -1142,7 +1152,7 @@ TArray<int32> AParentCombatCharacter::getTilesWithin(int32 GridNum, int32 range,
 		curr = leftAndRight[k] - 1;
 		while (i <= range)
 		{
-			if (curr % maxY >= 0)
+			if (curr % maxY >= 0 && curr / maxY == leftAndRight[k] / maxY)
 			{
 				result.Add(curr);
 				curr = curr - 1;
@@ -1158,7 +1168,7 @@ TArray<int32> AParentCombatCharacter::getTilesWithin(int32 GridNum, int32 range,
 		i = 1;
 		while (i <= range)
 		{
-			if (curr % maxY < maxY)
+			if (curr % maxY < maxY && curr / maxY == leftAndRight[k] / maxY)
 			{
 				result.Add(curr);
 				curr = curr + 1;
