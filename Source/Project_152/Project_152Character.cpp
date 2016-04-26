@@ -284,7 +284,7 @@ void AProject_152Character::SpawnMovementIndicators_Implementation()
 
 void AProject_152Character::SaveMainCharacter()
 {
-	AProject_152Character* newChar = new AProject_152Character();
+	AProject_152Character* newChar = Cast<AProject_152Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 	FString PlayerName = TEXT("MainPlayer");
 	UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
