@@ -161,6 +161,7 @@ void AParentCombatCharacter::Tick(float DeltaSeconds)
 	{
 		GetSprite()->SetFlipbook(AttackAnimation);
 	}
+
 }
 
 
@@ -493,15 +494,35 @@ void AParentCombatCharacter::TakeTurn()
 			}
 		}
 	}
-	if (!bIsHumanPlayer)
+	else
 	{
-		if ((NumberOfMovesRemaining > 0) || (NumberOfAttacksRemaining > 0))
+		//if ((NumberOfMovesRemaining > 0) || (NumberOfAttacksRemaining > 0))
+		//{
+				//This is where the AI Functions will go. It is done in ticks and if's because it is called in the tick function
+			
+		if (NumberOfMovesRemaining > 0)
 		{
-
-			//This is where the AI Functions will go. It is done in ticks and if's because it is called in the tick function
 			//AIGenerateTargetAndPath();
-			//MoveToPosition();
-			//Attack();
+			PathwayPoints.Add(129);
+			PathwayPoints.Add(120);
+			PathwayPoints.Add(111);
+			bChooseMove = true;
+			MoveToPosition();
+		}
+		if(NumberOfAttacksRemaining > 0)
+		{//UE_LOG(LogTemp, Warning, TEXT("%d"), PathwayPoints[0]);
+
+			bChooseAttack = true;
+			if (bHasTarget)
+				Attack();
+
+
+			//This is so the AI can skip turns when no attack, only need this for testing
+			NumberOfAttacksRemaining--;
+
+
+
+			//This might not fully be working. May need to set ->NextTurn Manually
 		}
 	}
 	/*
@@ -931,6 +952,7 @@ bool AParentCombatCharacter::CheckIfHumanPlayersDead()
 
 void AParentCombatCharacter::AIGenerateTargetAndPath()
 {
+	bHasTarget = false;
 	int32 i;
 	struct gridNumAndDamage {
 		int32 gridID;	// represents the tile grid Number
@@ -999,8 +1021,10 @@ void AParentCombatCharacter::AIGenerateTargetAndPath()
 		if (lowestPath <= maxNumberOfMoves)
 		{
 			selectedTarget = true;
+			AttackTargetLocation = CombatGrid->WorldLocArray[targetGrid];
 			 // set the attack to targetGRid;
 			GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), lowestPathTile, CombatGrid);
+			bHasTarget = true;
 			break;
 		}
 	}

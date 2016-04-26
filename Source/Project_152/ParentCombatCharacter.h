@@ -63,6 +63,8 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		void MoveDown(float Value);
 		void UpdateCharacter();
 
+		//Boolean to determine if AI has a target or not
+		bool bHasTarget = false;
 
 		// APawn interface
 		virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
