@@ -505,9 +505,7 @@ void AParentCombatCharacter::TakeTurn()
 			AIGenerateTargetAndPath();
 			// Maybe error with running two generate pathways?
 			// realized even one like we have below doesnt work...maybe something to do with bChooseMove?
-			GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), 5, CombatGrid);
-			
-			
+
 			/*PathwayPoints.Add(34);
 			TArray<int32> q = getTilesWithin(8, 3, false);
 			for (int32 i = 0; i < q.Num(); i++)
@@ -525,8 +523,8 @@ void AParentCombatCharacter::TakeTurn()
 		{//UE_LOG(LogTemp, Warning, TEXT("%d"), PathwayPoints[0]);
 
 			bChooseAttack = true;
-			//if (bHasTarget)
-				//Attack();
+			if (bHasTarget)
+				Attack();
 
 
 			//This is so the AI can skip turns when no attack, only need this for testing
@@ -600,6 +598,8 @@ void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGrid
 {
 	// Use the graph A star search algorithm keeping track of the path cost (number of steps taken) with the
 	// heuristic where heuristic(location) = number of horizontal distance from destination + number of vertical distance from destination
+	if (CombatGrid->GridType[destGridNum] != 0)
+		return;
 
 	// flush out previous pathway
 	PathwayPoints.Empty();
@@ -1020,6 +1020,8 @@ void AParentCombatCharacter::AIGenerateTargetAndPath()
 			TArray<int32> tilesInRange = getTilesWithin(sameDamageTiles[j].gridID, this->AttackRange, false);
 			for (int32 k = 0; k < tilesInRange.Num(); k++)
 			{
+				if (CombatGrid->GridType[tilesInRange[k]] != 0)
+					continue;
 				PathwayPoints.Empty();
 				GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), tilesInRange[k], CombatGrid);
 				if (PathwayPoints.Num() < lowestPath)
@@ -1041,7 +1043,7 @@ void AParentCombatCharacter::AIGenerateTargetAndPath()
 			break;
 		}
 	}
-
+	
 	// check if no one was in range
 	if (!selectedTarget)
 	{
@@ -1051,17 +1053,32 @@ void AParentCombatCharacter::AIGenerateTargetAndPath()
 		{
 			if (CombatGrid->GridType[i] == 2)
 			{
-				GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), i, CombatGrid);
-				if (PathwayPoints.Num() < closest)
+				int32 horizontalDistance = i / CombatGrid->GetMaxY() - GetGridNum(GetActorLocation(), WorldGridRef) / CombatGrid->GetMaxY();
+				if (horizontalDistance < 0)
+					horizontalDistance *= -1;
+				int32 verticalDistance = i % CombatGrid->GetMaxY() - GetGridNum(GetActorLocation(), WorldGridRef) % CombatGrid->GetMaxY();
+				if (verticalDistance < 0)
+					verticalDistance *= -1;
+
+				int32 totalDistance = horizontalDistance + verticalDistance;
+				if (totalDistance < closest)
 				{
 					closestIndex = i;
-					closest = PathwayPoints.Num();
+					closest = totalDistance;
 				}
 			}
 		}
-		GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), closestIndex, CombatGrid);
+		TArray<int32> temp = getTilesWithin(closestIndex, 1, true);
+		for (int32 l = 0; l < temp.Num(); l++)
+		{
+			if (CombatGrid->GridType[temp[l]] != 0)
+			{
+				continue;
+			}
+			GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), temp[l], CombatGrid);
+			break;
+		}
 	}
-	
 }
 
 int32 AParentCombatCharacter::DamageDoneAt(int32 targetGridNum)
