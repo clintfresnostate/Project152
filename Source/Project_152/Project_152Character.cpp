@@ -298,7 +298,11 @@ void AProject_152Character::LoadMainCharacter()
 {
 	UMySaveGame* LoadGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
 	LoadGameInstance = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
+<<<<<<< HEAD
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("I'm sentient...")));
 	AProject_152Character* PlayerCharacterToUse = LoadGameInstance->mainPlayer;
 	//UGameplayStatics::GetPlayerCharacter(GetWorld(), 0) = PlayerCharacterToUse;
+=======
+	PlayerCharacterToUse = LoadGameInstance->mainPlayer;
+>>>>>>> origin/master
 }

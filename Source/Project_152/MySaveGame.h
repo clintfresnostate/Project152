@@ -19,7 +19,11 @@ public:
 		AProject_152Character* mainPlayer;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
+<<<<<<< HEAD
 		FString SaveSlotName = "TEST";
+=======
+		FString SaveSlotName = "test";
+>>>>>>> origin/master
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
 		int32 UserIndex = 0;
