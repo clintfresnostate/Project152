@@ -287,7 +287,8 @@ void AProject_152Character::SpawnMovementIndicators_Implementation()
 void AProject_152Character::SaveMainCharacter()
 {
 	UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
-	SaveGameInstance->SaveArray = InventoryArray;
+	SaveGameInstance->SaveInvArray = InventoryArray;
+	SaveGameInstance->SaveCombatCharInvArray = ParentCombatCharacterInventoryArray;
 	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SaveSlotName, SaveGameInstance->UserIndex);
 }
 
@@ -295,8 +296,6 @@ void AProject_152Character::LoadMainCharacter()
 {
 	UMySaveGame* LoadGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
 	LoadGameInstance = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("I'm sentient...")));
-
-	InventoryArray = LoadGameInstance->SaveArray;
+	InventoryArray = LoadGameInstance->SaveInvArray;
+	ParentCombatCharacterInventoryArray = LoadGameInstance->SaveCombatCharInvArray;
 }

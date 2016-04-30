@@ -22,7 +22,9 @@ public:
 		float locationZ;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
-		TArray<FInventoryItemStruct> SaveArray;
+		TArray<FInventoryItemStruct> SaveInvArray;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
+		TArray<FInventoryItemStruct> SaveCombatCharInvArray;
 
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
 
