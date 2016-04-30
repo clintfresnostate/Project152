@@ -286,20 +286,32 @@ void AProject_152Character::SpawnMovementIndicators_Implementation()
 
 void AProject_152Character::SaveMainCharacter()
 {
+	
+	
+	
+	
+	
+	/*
 	AProject_152Character* newChar = Cast<AProject_152Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-
-	//FString PlayerName = TEXT("MainPlayer");
 	UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
 	SaveGameInstance->mainPlayer = newChar;
 	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SaveSlotName, SaveGameInstance->UserIndex);
+	*/
 }
 
 void AProject_152Character::LoadMainCharacter()
 {
+
+
+
+
+
+	/*
 	UMySaveGame* LoadGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
 	LoadGameInstance = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("I'm sentient...")));
 
 	AProject_152Character* PlayerCharacterToUse = LoadGameInstance->mainPlayer;
+	*/
 }

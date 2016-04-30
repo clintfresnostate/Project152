@@ -14,12 +14,26 @@ class PROJECT_152_API UMySaveGame : public USaveGame
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
+		float locationX;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
+		float locationY;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
+		float locationZ;
 
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
+
+
+	/*
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
 		AProject_152Character* mainPlayer;
+		*/
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
-
 		FString SaveSlotName = "TEST";
 
 
