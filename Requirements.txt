@@ -1,0 +1,31 @@
+This is just a quick document about what needs to be done before we present on the 10th.
+Feel free to add anything you think might be necessary or that I forgot.
+
+I'll order the stuff from "Minimum Requirements", to "Maximum Requirements", to "Stretch Requirements".
+
+---Minimum Reqs---
++Merchant System
+	-Purchasable Items
+	-Purchasable Fighters
++Leveling System
++Finalized AI Combat
+	-Make it so they can attack
++Player "Home Base"
++Fighter Abilities
++Tutorial Document
++Key Binding Document
++Main Menu Widget
++In-game Widget
++Save/Load Feature
+
+---Maximum Reqs---
++Stat system
++Multiple Fighter Abilities
++Tutorial Level
+
+---Stretch Goals---
++Various Level Designs and Obstacles
++Purchasable Armor
++Advanced AI w/ Unique Abilities
++Bosses
++Multiple Save Slots
