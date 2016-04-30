@@ -21,7 +21,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
 		float locationZ;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
+		TArray<FInventoryItemStruct> SaveArray;
 
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
 
