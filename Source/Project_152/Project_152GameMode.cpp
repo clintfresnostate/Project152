@@ -86,3 +86,11 @@ void AProject_152GameMode::Tick(float DeltaTime)
 		}
 	}
 }
+void AProject_152GameMode::WinExecution_Implementation()
+{
+
+}
+void AProject_152GameMode::LossExecution_Implementation()
+{
+
+}

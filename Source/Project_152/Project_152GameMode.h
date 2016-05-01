@@ -53,4 +53,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 		int32 UniqueItemID = 0;
+
+	UFUNCTION(BlueprintNativeEvent, Category = WinCondition)
+		void WinExecution(); // Dummy event
+
+	UFUNCTION(BlueprintNativeEvent, Category = WinCondition)
+		void LossExecution(); // Dummy event 
 };

@@ -251,7 +251,6 @@ void AParentCombatCharacter::RefreshInventory_Implementation()
 {
 
 }
-
 void AParentCombatCharacter::UpdateInventory()
 {
 	RefreshInventory();
@@ -928,6 +927,7 @@ bool AParentCombatCharacter::CheckIfHealthIsZero(AParentCombatCharacter* TargetO
 		{
 			CombatGrid->GridType[GetGridNum(GetActorLocation(),WorldGridRef)] = 0;
 			GameModeRef->CharactersInCombat.Remove(TargetOfHealthCheck);
+			CheckForWinCondition();
 			Destroy();
 			return true;
 		}
@@ -941,7 +941,7 @@ bool AParentCombatCharacter::CheckIfAIDead()
 
 	for (int i = 0; i < GameModeRef->CharactersInCombat.Num(); i++)
 	{
-		if (GameModeRef->CharactersInCombat[i]->TeamIndex == 1)
+		if (!GameModeRef->CharactersInCombat[i]->bIsHumanPlayer)
 		{
 			return false;
 		}
@@ -954,14 +954,26 @@ bool AParentCombatCharacter::CheckIfHumanPlayersDead()
 
 	for (int i = 0; i < GameModeRef->CharactersInCombat.Num(); i++)
 	{
-		if (GameModeRef->CharactersInCombat[i]->TeamIndex == 0)
+		if (GameModeRef->CharactersInCombat[i]->bIsHumanPlayer)
 		{
 			return false;
 		}
 	}
 	return true;
 }
+void AParentCombatCharacter::CheckForWinCondition()
+{
+	AProject_152GameMode* GameModeRef = Cast<AProject_152GameMode>(GetWorld()->GetAuthGameMode());
 
+	//return 1 for win
+	if (CheckIfAIDead())
+		GameModeRef->WinExecution();
+
+	//return 2 for loss
+	if (CheckIfHumanPlayersDead())
+		GameModeRef->LossExecution();
+
+}
 void AParentCombatCharacter::AIGenerateTargetAndPath()
 {
 	bHasTarget = false;

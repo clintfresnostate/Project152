@@ -222,6 +222,8 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			bool CheckIfAIDead();
 		UFUNCTION(BlueprintCallable, Category = Combat)
 			bool CheckIfHumanPlayersDead();
+		UFUNCTION(BlueprintCallable, Category = Combat)
+			void CheckForWinCondition();
 		UFUNCTION(BlueprintNativeEvent, Category = Combat)
 			void SetTurnIndicatorHidden();
 		UFUNCTION(BlueprintNativeEvent, Category = Combat)
