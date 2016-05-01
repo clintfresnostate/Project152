@@ -4,8 +4,10 @@
 
 #include "PaperCharacter.h"
 #include "InventoryItem.h"
+#include "Archive.h"
+#include "ArchiveBase.h"
+#include "FileManager.h"
 #include "Project_152Character.generated.h"
-
 
 // This class is the default character for Project_152, and it is responsible for all
 // physical interaction between the player and the world.
@@ -13,9 +15,7 @@
 //   The capsule component (inherited from ACharacter) handles collision with the world
 //   The CharacterMovementComponent (inherited from ACharacter) handles movement of the collision capsule
 //   The Sprite component (inherited from APaperCharacter) handles the visuals
-
 class UTextRenderComponent;
-
 UCLASS(config=Game)
 class AProject_152Character : public APaperCharacter
 {
@@ -146,4 +146,7 @@ public:
 		void LoadMainCharacter();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Loading)
 		AProject_152Character* PlayerCharacterToUse;
+
+	//UFUNCTION(BlueprintCallable, Catagory = LoadingSaving)
+		//void SaveLoadData(FArchive& Ar, FVector& SaveDataVector);
 };

@@ -284,8 +284,36 @@ void AProject_152Character::SpawnMovementIndicators_Implementation()
 /////////////////////////////////////////////////////////////////
 // Saving/Loading Character
 
+//void AProject_152Character::SaveLoadData(FArchive& Ar, FVector& SaveDataVector)
+//{
+	//Ar << SaveDataVector;
+//}
+
 void AProject_152Character::SaveMainCharacter()
 {
+	/*
+	FBufferArchive ToBinary;
+	FVector PlayerLocation = (UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
+	SaveLoadData(ToBinary, PlayerLocation);
+	const FString FullFilePath = FPaths::ConvertRelativePathToFull(FPaths::GameSavedDir());
+
+	if (ToBinary.Num() <= 0) return false;
+
+	if (FFileHelper::SaveArrayToFile(ToBinary, *FullFilePath))
+	{
+		ToBinary.FlushCache();
+		ToBinary.Empty();
+
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Save success!");
+		return true;
+	}
+	ToBinary.FlushCache();
+	ToBinary.Empty();
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "File could not be saved!");
+
+	return false;
+	*/
 	UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
 	SaveGameInstance->SaveInvArray = InventoryArray;
 	SaveGameInstance->SaveCombatCharInvArray = ParentCombatCharacterInventoryArray;
@@ -294,6 +322,32 @@ void AProject_152Character::SaveMainCharacter()
 
 void AProject_152Character::LoadMainCharacter()
 {
+	/*
+	const FString FullFilePath = FPaths::ConvertRelativePathToFull(FPaths::GameSavedDir());
+	TArray<uint8> TheBinaryArray;
+	FVector PlayerLocation = (UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
+	if (!FFileHelper::LoadFileToArray(TheBinaryArray, *FullFilePath))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Invalid File!");
+		return false;
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Loaded File Size");
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::FromInt(TheBinaryArray.Num()));
+
+	if (TheBinaryArray.Num() <= 0) return false;
+
+	FMemoryReader FromBinary = FMemoryReader(TheBinaryArray, true); //true, free data after done
+	FromBinary.Seek(0);
+	SaveLoadData(FromBinary, PlayerLocation);
+
+	FromBinary.FlushCache();
+
+	TheBinaryArray.Empty();
+	FromBinary.Close();
+
+	return true;
+	*/
 	UMySaveGame* LoadGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
 	LoadGameInstance = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
 	InventoryArray = LoadGameInstance->SaveInvArray;
