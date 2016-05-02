@@ -501,8 +501,8 @@ void AParentCombatCharacter::TakeTurn()
 			
 		if (NumberOfMovesRemaining > 0)
 		{
-			AIGenerateTargetAndPath();
-			
+			AIGeneratePath();
+			//PathwayPoints.Empty();
 			//bChooseMove = true;
 			MoveToPosition();
 		
@@ -510,7 +510,7 @@ void AParentCombatCharacter::TakeTurn()
 		AProject_152GameMode* GameModeRef = Cast<AProject_152GameMode>(GetWorld()->GetAuthGameMode());
 		if((NumberOfAttacksRemaining > 0) && (GameModeRef->bDoneWithMove))
 		{//UE_LOG(LogTemp, Warning, TEXT("%d"), PathwayPoints[0]);
-			AIGenerateTargetAndPath();
+			AIGenerateTarget();
 			//bChooseAttack = true;
 			if (bHasTarget)
 				Attack();
@@ -963,19 +963,15 @@ void AParentCombatCharacter::CheckForWinCondition()
 		GameModeRef->LossExecution();
 
 }
-void AParentCombatCharacter::AIGenerateTargetAndPath()
+void AParentCombatCharacter::AIGeneratePath()
 {
-	bHasTarget = false;
-
+	// Check if already in range of an enemy, do not move
 	TArray<int32> initialRange = getTilesWithin(GetGridNum(GetActorLocation(), WorldGridRef), AttackRange, false);
 	for (int32 f = 0; f < initialRange.Num(); f++)
 	{
 		if (CombatGrid->GridType[initialRange[f]] == 2)
 		{
 			PathwayPoints.Empty();
-			AttackTargetLocation = CombatGrid->WorldLocArray[initialRange[f]];
-			AcquireTargetFromMouse(initialRange[f], CombatGrid);
-			bHasTarget = true;
 			return;
 		}
 	}
@@ -1042,16 +1038,25 @@ void AParentCombatCharacter::AIGenerateTargetAndPath()
 			lowestPath = PathwayPoints.Num();
 		}
 	}
-
-	//check if we can move there, if we can set the target
-	if (lowestPath <= maxNumberOfMoves)
-	{
-		AttackTargetLocation = CombatGrid->WorldLocArray[lowest.gridTarget];
-		AcquireTargetFromMouse(lowest.gridTarget, CombatGrid);
-		bHasTarget = true;
-	}
 	PathwayPoints.Empty();
 	GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), lowest.gridID, CombatGrid);
+}
+
+void AParentCombatCharacter::AIGenerateTarget()
+{
+	bHasTarget = false;
+
+	TArray<int32> initialRange = getTilesWithin(GetGridNum(GetActorLocation(), WorldGridRef), AttackRange, false);
+	for (int32 f = 0; f < initialRange.Num(); f++)
+	{
+		if (CombatGrid->GridType[initialRange[f]] == 2)
+		{
+			AttackTargetLocation = CombatGrid->WorldLocArray[initialRange[f]];
+			AcquireTargetFromMouse(initialRange[f], CombatGrid);
+			bHasTarget = true;
+			return;
+		}
+	}
 }
 
 int32 AParentCombatCharacter::DamageDoneAt(int32 targetGridNum)

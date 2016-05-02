@@ -233,7 +233,9 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		// search through the combat grid and return the locations that the AI could attack to generate damage
 		// returns the grid locations sorted by most damage, e.g. index 0 will generate most damage, duplicates possible
 		UFUNCTION(BlueprintCallable, Category = Combat)
-			void AIGenerateTargetAndPath();
+			void AIGeneratePath();
+		UFUNCTION(BlueprintCallable, Category = Combat)
+			void AIGenerateTarget();
 		// returns the total damage done at grid number passed in, based on spash damage, used by AI
 		// Assume GridType = 2 -> Player Characters, GridType = 3 -> AI
 		UFUNCTION(BlueprintCallable, Category = Combat)
