@@ -131,6 +131,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 		bool bEnableMovementIndicators = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUD)
+		bool bLoading = false;
+
 	UFUNCTION(BlueprintNativeEvent, Category = Combat)
 		void SpawnIndicators();
 	UFUNCTION(BlueprintNativeEvent, Category = Combat)
