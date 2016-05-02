@@ -503,7 +503,7 @@ void AParentCombatCharacter::TakeTurn()
 		{
 			AIGenerateTargetAndPath();
 			
-			bChooseMove = true;
+			//bChooseMove = true;
 			MoveToPosition();
 		
 		}
@@ -511,13 +511,14 @@ void AParentCombatCharacter::TakeTurn()
 		if((NumberOfAttacksRemaining > 0) && (GameModeRef->bDoneWithMove))
 		{//UE_LOG(LogTemp, Warning, TEXT("%d"), PathwayPoints[0]);
 			AIGenerateTargetAndPath();
-			bChooseAttack = true;
+			//bChooseAttack = true;
 			if (bHasTarget)
 				Attack();
 
 
 			//This is so the AI can skip turns when no attack, only need this for testing
-			NumberOfAttacksRemaining--;
+			else
+				NumberOfAttacksRemaining--;
 
 
 
@@ -900,7 +901,7 @@ void AParentCombatCharacter::AcquireTargetFromMouse(int32 GridIndex, ACombatGrid
 	AProject_152GameMode* GameModeRef = Cast<AProject_152GameMode>(GetWorld()->GetAuthGameMode());
 	for (int i = 0; i < GameModeRef->CharactersInCombat.Num(); i++)
 	{
-		if (GameModeRef->CharactersInCombat[i]->IndexOfLocationOnGrid == PlayerCharacter->CurrentMouseLocationIndex)
+		if (GameModeRef->CharactersInCombat[i]->IndexOfLocationOnGrid == GridIndex)
 		{
 			AcquiredTarget = GameModeRef->CharactersInCombat[i];
 			SuccessfulAcquiredTarget = true;
@@ -916,9 +917,7 @@ bool AParentCombatCharacter::CheckIfHealthIsZero(AParentCombatCharacter* TargetO
 		if (GameModeRef->CharactersInCombat.Contains(TargetOfHealthCheck))
 		{
 			CombatGrid->GridType[GetGridNum(GetActorLocation(),WorldGridRef)] = 0;
-			GameModeRef->CharactersInCombat.Remove(TargetOfHealthCheck);
 			CheckForWinCondition();
-			Destroy();
 			return true;
 		}
 	}
@@ -931,7 +930,7 @@ bool AParentCombatCharacter::CheckIfAIDead()
 
 	for (int i = 0; i < GameModeRef->CharactersInCombat.Num(); i++)
 	{
-		if (!GameModeRef->CharactersInCombat[i]->bIsHumanPlayer)
+		if ((!GameModeRef->CharactersInCombat[i]->bIsHumanPlayer) && (GameModeRef->CharactersInCombat[i]->CurrentHealthStat>0))
 		{
 			return false;
 		}
@@ -944,7 +943,7 @@ bool AParentCombatCharacter::CheckIfHumanPlayersDead()
 
 	for (int i = 0; i < GameModeRef->CharactersInCombat.Num(); i++)
 	{
-		if (GameModeRef->CharactersInCombat[i]->bIsHumanPlayer)
+		if ((GameModeRef->CharactersInCombat[i]->bIsHumanPlayer) && (GameModeRef->CharactersInCombat[i]->CurrentHealthStat>0))
 		{
 			return false;
 		}

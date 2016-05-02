@@ -67,6 +67,12 @@ void AProject_152GameMode::Tick(float DeltaTime)
 	if (bInCombat)
 	{
 		CharactersInCombat[TurnIncrement % CharactersInCombat.Num()]->SetTurnIndicatorVisible();
+		if (CharactersInCombat[TurnIncrement % CharactersInCombat.Num()]->CurrentHealthStat <= 0)
+		{
+			//TurnIncrement++;
+			//bTakeTurn = false;
+			bNextTurn = true;
+		}
 		if (bTakeTurn)
 		{
 			CharactersInCombat[TurnIncrement % CharactersInCombat.Num()]->TakeTurn();
