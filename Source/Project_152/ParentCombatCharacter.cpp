@@ -502,17 +502,7 @@ void AParentCombatCharacter::TakeTurn()
 		if (NumberOfMovesRemaining > 0)
 		{
 			AIGenerateTargetAndPath();
-			// Maybe error with running two generate pathways?
-			// realized even one like we have below doesnt work...maybe something to do with bChooseMove?
-
-			/*PathwayPoints.Add(34);
-			TArray<int32> q = getTilesWithin(8, 3, false);
-			for (int32 i = 0; i < q.Num(); i++)
-			{
-				PathwayPoints.Add(q[i]);
-				PathwayPoints.Add(34);
-			}*/
-
+			
 			bChooseMove = true;
 			MoveToPosition();
 		
@@ -520,7 +510,7 @@ void AParentCombatCharacter::TakeTurn()
 		AProject_152GameMode* GameModeRef = Cast<AProject_152GameMode>(GetWorld()->GetAuthGameMode());
 		if((NumberOfAttacksRemaining > 0) && (GameModeRef->bDoneWithMove))
 		{//UE_LOG(LogTemp, Warning, TEXT("%d"), PathwayPoints[0]);
-
+			AIGenerateTargetAndPath();
 			bChooseAttack = true;
 			if (bHasTarget)
 				Attack();
@@ -977,14 +967,28 @@ void AParentCombatCharacter::CheckForWinCondition()
 void AParentCombatCharacter::AIGenerateTargetAndPath()
 {
 	bHasTarget = false;
+
+	TArray<int32> initialRange = getTilesWithin(GetGridNum(GetActorLocation(), WorldGridRef), AttackRange, false);
+	for (int32 f = 0; f < initialRange.Num(); f++)
+	{
+		if (CombatGrid->GridType[initialRange[f]] == 2)
+		{
+			PathwayPoints.Empty();
+			AttackTargetLocation = CombatGrid->WorldLocArray[initialRange[f]];
+			bHasTarget = true;
+			return;
+		}
+	}
+	
 	int32 i;
 	struct gridNumAndDamage {
 		int32 gridID;	// represents the tile grid Number
 		int32 damage;	// represents the total damage possible if a at gridID
+		int32 gridTarget; //represents the tile that we are attacking
 	};
 
 	TArray<gridNumAndDamage> attackTiles;
-
+	// find all the tiles that the AI can attack
 	for (i = 0; i < CombatGrid->GetMaxX() * CombatGrid->GetMaxY(); i++)
 	{
 		int32 damage = DamageDoneAt(i);
@@ -997,100 +1001,56 @@ void AParentCombatCharacter::AIGenerateTargetAndPath()
 		}
 	}
 	
-	for (i = 0; i < attackTiles.Num() - 1; i++)
+	TArray<gridNumAndDamage> tilesInRange;
+	tilesInRange.Empty();
+	// expand each tile
+	for (int32 m = 0; m < attackTiles.Num(); m++)
 	{
-		for (int32 j = i + 1; j > 0; j--)
+		TArray<int32> temp = getTilesWithin(attackTiles[m].gridID, AttackRange, false);
+		for (int32 n = 0; n < temp.Num(); n++)
 		{
-			if (attackTiles[j].damage > attackTiles[j - 1].damage)
-			{
-				attackTiles.Swap(j, j - 1);
-			}
-			else
-			{
-				break;
-			}
-		}
-	}
-	// big for loop expaning each component of attackTiles array here instead of what I have below
-	bool selectedTarget = false;
-	for (int32 i = 0; i < attackTiles.Num(); i++)
-	{
-		TArray<gridNumAndDamage> sameDamageTiles;
-		sameDamageTiles.Add(attackTiles[i]);
-		
-		while (i < (attackTiles.Num() - 1) && attackTiles[i + 1].damage == attackTiles[i].damage)
-		{
-			i++;
-			sameDamageTiles.Add(attackTiles[i]);
-		}
-
-		int32 lowestPathTile = -1;
-		int32 targetGrid = -1;
-		int32 lowestPath = 999;
-		for (int32 j = 0; j < sameDamageTiles.Num(); j++)
-		{
-			TArray<int32> tilesInRange = getTilesWithin(sameDamageTiles[j].gridID, this->AttackRange, false);
-			for (int32 k = 0; k < tilesInRange.Num(); k++)
-			{
-				if (CombatGrid->GridType[tilesInRange[k]] != 0)
-					continue;
-				PathwayPoints.Empty();
-				GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), tilesInRange[k], CombatGrid);
-				if (PathwayPoints.Num() < lowestPath)
-				{
-					lowestPathTile = tilesInRange[k];
-					targetGrid = sameDamageTiles[j].gridID;
-					lowestPath = PathwayPoints.Num();
-				}
-			}
-		}
-		if (lowestPath <= maxNumberOfMoves)
-		{
-			selectedTarget = true;
-			AttackTargetLocation = CombatGrid->WorldLocArray[targetGrid];
-			 // set the attack to targetGRid;
-			PathwayPoints.Empty();
-			GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), lowestPathTile, CombatGrid);
-			bHasTarget = true;
-			break;
-		}
-	}
-	
-	// check if no one was in range
-	if (!selectedTarget)
-	{
-		int32 closest = 999999;
-		int32 closestIndex;
-		for (int32 i = 0; i < CombatGrid->GetMaxX() * CombatGrid->GetMaxY(); i++)
-		{
-			if (CombatGrid->GridType[i] == 2)
-			{
-				int32 horizontalDistance = i / CombatGrid->GetMaxY() - GetGridNum(GetActorLocation(), WorldGridRef) / CombatGrid->GetMaxY();
-				if (horizontalDistance < 0)
-					horizontalDistance *= -1;
-				int32 verticalDistance = i % CombatGrid->GetMaxY() - GetGridNum(GetActorLocation(), WorldGridRef) % CombatGrid->GetMaxY();
-				if (verticalDistance < 0)
-					verticalDistance *= -1;
-
-				int32 totalDistance = horizontalDistance + verticalDistance;
-				if (totalDistance < closest)
-				{
-					closestIndex = i;
-					closest = totalDistance;
-				}
-			}
-		}
-		TArray<int32> temp = getTilesWithin(closestIndex, 1, true);
-		for (int32 l = 0; l < temp.Num(); l++)
-		{
-			if (CombatGrid->GridType[temp[l]] != 0)
-			{
+			if (CombatGrid->GridType[temp[n]] != 0)
 				continue;
-			}
-			GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), temp[l], CombatGrid);
-			break;
+
+			gridNumAndDamage p;
+			p.damage = attackTiles[m].damage;
+			p.gridID = temp[n];
+			p.gridTarget = attackTiles[m].gridID;
+
+			tilesInRange.Add(p);
 		}
 	}
+
+	gridNumAndDamage lowest;
+	lowest.damage = -9999;
+	lowest.gridID = -1;
+	lowest.gridTarget = 01;
+
+	int32 lowestPath = 9999;
+	
+	//find which tile generates the lowest path
+	for (int32 i = 0; i < tilesInRange.Num(); i++)
+	{
+		PathwayPoints.Empty();
+		GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), tilesInRange[i].gridID, CombatGrid);
+		if (PathwayPoints.Num() <= lowestPath && tilesInRange[i].damage >= lowest.damage)
+		{
+			lowest.damage = tilesInRange[i].damage;
+			lowest.gridID = tilesInRange[i].gridID;
+			lowest.gridTarget = tilesInRange[i].gridTarget;
+
+			lowestPath = PathwayPoints.Num();
+		}
+	}
+
+	//check if we can move there, if we can set the target
+	if (lowestPath <= maxNumberOfMoves)
+	{
+		AttackTargetLocation = CombatGrid->WorldLocArray[lowest.gridTarget];
+		bHasTarget = true;
+	}
+	PathwayPoints.Empty();
+	GeneratePathways(GetGridNum(GetActorLocation(), WorldGridRef), lowest.gridID, CombatGrid);
 }
 
 int32 AParentCombatCharacter::DamageDoneAt(int32 targetGridNum)
