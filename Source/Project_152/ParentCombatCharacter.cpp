@@ -975,6 +975,7 @@ void AParentCombatCharacter::AIGenerateTargetAndPath()
 		{
 			PathwayPoints.Empty();
 			AttackTargetLocation = CombatGrid->WorldLocArray[initialRange[f]];
+			AcquireTargetFromMouse(initialRange[f], CombatGrid);
 			bHasTarget = true;
 			return;
 		}
@@ -1047,6 +1048,7 @@ void AParentCombatCharacter::AIGenerateTargetAndPath()
 	if (lowestPath <= maxNumberOfMoves)
 	{
 		AttackTargetLocation = CombatGrid->WorldLocArray[lowest.gridTarget];
+		AcquireTargetFromMouse(lowest.gridTarget, CombatGrid);
 		bHasTarget = true;
 	}
 	PathwayPoints.Empty();
