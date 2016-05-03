@@ -4,6 +4,7 @@
 #include "ParentCombatCharacter.h"
 #include "PaperFlipbookComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "Engine.h"
 #include "CombatGrid.h"
 #include "Project_152Character.h"
 #include "Project_152GameMode.h"
@@ -463,6 +464,7 @@ int32 AParentCombatCharacter::GetSpeedStat()
 }
 void AParentCombatCharacter::TakeTurn()
 {
+	GEngine->AddOnScreenDebugMessage(0, 0.5f, FColor::Red, FString("Taking Turn"));
 	PathwayPoints.Empty();
 	if (bIsHumanPlayer)
 	{
@@ -512,15 +514,19 @@ void AParentCombatCharacter::TakeTurn()
 		{//UE_LOG(LogTemp, Warning, TEXT("%d"), PathwayPoints[0]);
 			AIGenerateTarget();
 			//bChooseAttack = true;
-			if (bHasTarget)
-				Attack();
+			if (!bIsAttacking)
+			{
+				if (bHasTarget)
+				{
+					Attack();
+					SuccessfulAcquiredTarget = false;
+				}
 
+				//This is so the AI can skip turns when no attack, only need this for testing
+				else
+					NumberOfAttacksRemaining--;
 
-			//This is so the AI can skip turns when no attack, only need this for testing
-			else
-				NumberOfAttacksRemaining--;
-
-
+			}
 
 			//This might not fully be working. May need to set ->NextTurn Manually
 		}
