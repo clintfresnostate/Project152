@@ -218,6 +218,8 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		//Team Index 0 for human, 1 for AI
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 			int32 TeamIndex = 0;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+			int32 ItemId;
 		UFUNCTION(BlueprintCallable, Category = Combat)
 			bool CheckIfAIDead();
 		UFUNCTION(BlueprintCallable, Category = Combat)
@@ -304,6 +306,8 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			void LevelUp();
 		UFUNCTION(BlueprintCallable, Category = Level)
 			void AddExperience(int32 InputExperience);
+		UFUNCTION(BlueprintCallable, Category = Level)
+			void UpdateLevelAndExperienceFromTotal();
 		// Generate the shortest path from starting gridNum to destination gridnum storing it in the PathwayPoints array
 		UFUNCTION(BlueprintCallable, Category = GridMovement)
 			void GeneratePathways(int32 startGridNum, int32 destGridNum, ACombatGrid* CombatGridRef);

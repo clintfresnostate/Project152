@@ -41,6 +41,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
 		int32 ItemSlotIndexHolder;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
+		int32 Health;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
+		int32 Stamina;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
+		int32 Strength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
+		int32 Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
+		int32 Intelligence;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
+		int32 Experience;
+
+
 	bool operator==(FInventoryItemStruct const& Other) const
 	{
 

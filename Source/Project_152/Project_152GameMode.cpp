@@ -102,15 +102,28 @@ void AProject_152GameMode::LossExecution_Implementation()
 }
 void AProject_152GameMode::ProcessWin(int32 InputExperience, int32 Currencytoadd)
 {
+	AProject_152Character* MyCharTemp;
+	MyCharTemp = Cast<AProject_152Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	TArray<int32> ItemIdArray;
+
 	for (int i = 0; i < CharactersInCombat.Num(); i++)
 	{
 		if (CharactersInCombat[i]->bIsHumanPlayer)
 		{
-			CharactersInCombat[i]->AddExperience(InputExperience);
+			ItemIdArray.Add(CharactersInCombat[i]->ItemId);
+			//CharactersInCombat[i]->AddExperience(InputExperience);
 		}
 	}
-	AProject_152Character* MyCharTemp;
-	MyCharTemp = Cast<AProject_152Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	
+	for (int i = 0; i < ItemIdArray.Num(); i++)
+	{
+		for (int j = 0; j < MyCharTemp->ParentCombatCharacterInventoryArray.Num(); j++)
+		{
+			if (MyCharTemp->ParentCombatCharacterInventoryArray[j].ItemID == ItemIdArray[i])
+				MyCharTemp->ParentCombatCharacterInventoryArray[j].Experience += InputExperience;
+		}
+	}
+	
 	MyCharTemp->Currency += Currencytoadd;
 
 }

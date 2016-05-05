@@ -575,6 +575,28 @@ void AParentCombatCharacter::AddExperience(int32 InputExperience)
 	}
 
 }
+void AParentCombatCharacter::UpdateLevelAndExperienceFromTotal()
+{
+	AProject_152Character* MyCharTemp;
+	MyCharTemp = Cast<AProject_152Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	for (int i = 0; i < MyCharTemp->ParentCombatCharacterInventoryArray.Num(); i++)
+	{
+		if (MyCharTemp->ParentCombatCharacterInventoryArray[i].ItemID == ItemId)
+		{
+			Experience = MyCharTemp->ParentCombatCharacterInventoryArray[i].Experience;
+		}
+
+	}
+	for (int i = 0; i < ExperienceBrackets.Num(); i++)
+	{
+		if (Experience<ExperienceBrackets[i])
+		{
+			Level = i;
+			break;
+		}
+	}
+}
 //This is used to keep track of the characters position on the grid. This Allows characters to not overlap. Last known position has to be re set back to its original
 void AParentCombatCharacter::UpdatePositionOnGrid(ACombatGrid* CombatGridRef)
 {
