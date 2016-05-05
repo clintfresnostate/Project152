@@ -115,7 +115,9 @@ void AProject_152Character::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	
-	UpdateCharacter();	
+	if (bEnableUpdateSprite)
+		UpdateCharacter();
+
 	PlayerControllerRef = GetWorld()->GetFirstPlayerController();
 	AProject_152GameMode* GameModeRef = Cast<AProject_152GameMode>(GetWorld()->GetAuthGameMode());
 

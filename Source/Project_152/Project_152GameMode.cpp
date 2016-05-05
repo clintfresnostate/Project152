@@ -100,3 +100,17 @@ void AProject_152GameMode::LossExecution_Implementation()
 {
 
 }
+void AProject_152GameMode::ProcessWin(int32 InputExperience, int32 Currencytoadd)
+{
+	for (int i = 0; i < CharactersInCombat.Num(); i++)
+	{
+		if (CharactersInCombat[i]->bIsHumanPlayer)
+		{
+			CharactersInCombat[i]->AddExperience(InputExperience);
+		}
+	}
+	AProject_152Character* MyCharTemp;
+	MyCharTemp = Cast<AProject_152Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	MyCharTemp->Currency += Currencytoadd;
+
+}

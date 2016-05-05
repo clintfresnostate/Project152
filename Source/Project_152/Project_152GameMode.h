@@ -59,4 +59,10 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, Category = WinCondition)
 		void LossExecution(); // Dummy event 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Level)
+		FString CurrentLevelName;
+
+	UFUNCTION(BlueprintCallable, Category = WinCondition)
+		void ProcessWin(int32 inputExperience, int32 currencytoadd);
 };
