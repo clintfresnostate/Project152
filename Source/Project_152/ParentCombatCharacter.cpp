@@ -518,8 +518,11 @@ void AParentCombatCharacter::TakeTurn()
 			{
 				if (bHasTarget)
 				{
-					Attack();
-					SuccessfulAcquiredTarget = false;
+					if ((Cast<AParentCombatCharacter>(AcquiredTarget)->CurrentHealthStat > 0))
+					{
+						Attack();
+					}
+						SuccessfulAcquiredTarget = false;
 				}
 
 				//This is so the AI can skip turns when no attack, only need this for testing
