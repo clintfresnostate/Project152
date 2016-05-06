@@ -464,7 +464,7 @@ int32 AParentCombatCharacter::GetSpeedStat()
 }
 void AParentCombatCharacter::TakeTurn()
 {
-	GEngine->AddOnScreenDebugMessage(0, 0.5f, FColor::Red, FString("Taking Turn"));
+	//GEngine->AddOnScreenDebugMessage(0, 0.5f, FColor::Red, FString("Taking Turn"));
 	PathwayPoints.Empty();
 	if (bIsHumanPlayer)
 	{

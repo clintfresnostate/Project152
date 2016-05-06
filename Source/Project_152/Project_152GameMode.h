@@ -65,4 +65,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = WinCondition)
 		void ProcessWin(int32 inputExperience, int32 currencytoadd);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+		TArray<int32> ExperienceBrackets;
+
+	UFUNCTION(BlueprintCallable, Category = WinCondition)
+		void CheckForLevelUP(FInventoryItemStruct ItemIn, int32 arrayindex);
 };

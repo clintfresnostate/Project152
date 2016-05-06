@@ -55,6 +55,8 @@ public:
 		int32 Intelligence;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
 		int32 Experience;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
+		int32 Level = 1;
 
 
 	bool operator==(FInventoryItemStruct const& Other) const
