@@ -57,7 +57,10 @@ public:
 		int32 Experience;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
 		int32 Level = 1;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
+		bool isParentCombatCharItem = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
+		bool isMod = false;
 
 	bool operator==(FInventoryItemStruct const& Other) const
 	{
@@ -93,6 +96,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
 		bool isParentCombatChar = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
+		bool isMod = false;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Item)
 		bool bDestroyAfterUse;// Should the item actor be destroyed after it has been used?

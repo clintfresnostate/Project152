@@ -94,6 +94,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
 		TArray<FInventoryItemStruct> ParentCombatCharacterInventoryArray;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
+		TArray<FInventoryItemStruct> ModInventory;
+
 	//Adds the item to the inventory given its FInventoryItemStruct or "data"
 	UFUNCTION(BlueprintCallable, Category = Inventory)
 		void GiveItem(FInventoryItemStruct Item);
