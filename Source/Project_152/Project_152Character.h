@@ -127,6 +127,9 @@ public:
 		int32 Currency = 500;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		int32 GlobalUniqueID = 200;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 		bool bMouseCursorSpawned = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)

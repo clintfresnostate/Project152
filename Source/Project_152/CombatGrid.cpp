@@ -169,3 +169,46 @@ int32 ACombatGrid::GetGridNum(FVector InputPosition)
 	return index;
 
 }
+void ACombatGrid::HandleMods(int32 ModType, AParentCombatCharacter* CharacterToApply, int32 InputStat)
+{
+	switch (ModType)
+	{
+	case 0:
+	{
+		CharacterToApply->NumberOfAttacksPerTurn += InputStat;
+		CharacterToApply->NumberOfAttacksRemaining += InputStat;
+		break;
+	}
+	case 1:
+	{
+		CharacterToApply->NumberofMovesPerTurn += InputStat;
+		CharacterToApply->NumberOfMovesRemaining += InputStat;
+		break;
+	}
+	case 2:
+	{
+		CharacterToApply->HealthStat += InputStat;
+		break;
+	}
+	case 3:
+	{
+		CharacterToApply->Intelligence += InputStat;
+		break;
+	}
+	case 4:
+	{
+		CharacterToApply->Speed += InputStat;
+		break;
+	}
+	case 5:
+	{
+		CharacterToApply->Stamina += InputStat;
+		break;
+	}
+	case 6:
+	{
+		CharacterToApply->Strength += InputStat;
+		break;
+	}
+	}
+}

@@ -63,6 +63,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = GridProperties)
 		int32 GetGridNum(FVector InputPosition);
 
+	UFUNCTION(BlueprintCallable, Category = GridProperties)
+		void HandleMods(int32 ModType, AParentCombatCharacter* CharacterToApply, int32 inputStat);
+
 	//Array of ints that store the Data type of each grid tile. To be generated in construction script alongside the grid array.
 	//The grid info will be editable in a BP for fast configuration of grid walls/open space etc.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = GridProperties)

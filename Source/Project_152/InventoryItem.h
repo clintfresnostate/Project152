@@ -61,7 +61,11 @@ public:
 		bool isParentCombatCharItem = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
 		bool isMod = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
+		int32 ModType;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
+		int32 ModStatIncrease;
 	bool operator==(FInventoryItemStruct const& Other) const
 	{
 

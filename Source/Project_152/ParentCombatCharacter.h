@@ -276,6 +276,11 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			int32 Intelligence = 5;
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 NumberOfAttacksPerTurn = 1;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+			int32 NumberofMovesPerTurn = 1;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 			int32 CurrentHealthStat = HealthStat;
 		//By Default the Characters are set to AI. Human controlled is set in Combat Grid on Spawn
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
