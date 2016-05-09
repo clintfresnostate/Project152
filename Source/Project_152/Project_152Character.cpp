@@ -320,6 +320,7 @@ void AProject_152Character::SaveMainCharacter()
 	SaveGameInstance->SaveInvArray = InventoryArray;
 	SaveGameInstance->SaveCombatCharInvArray = ParentCombatCharacterInventoryArray;
 	SaveGameInstance->SaveModInventoryArray = ModInventory;
+	SaveGameInstance->SaveUniqueItemID = GlobalUniqueID;
 	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SaveSlotName, SaveGameInstance->UserIndex);
 }
 
@@ -355,5 +356,6 @@ void AProject_152Character::LoadMainCharacter()
 	LoadGameInstance = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
 	InventoryArray = LoadGameInstance->SaveInvArray;
 	ParentCombatCharacterInventoryArray = LoadGameInstance->SaveCombatCharInvArray;
+	GlobalUniqueID = LoadGameInstance->SaveUniqueItemID;
 	ModInventory = LoadGameInstance->SaveModInventoryArray;
 }

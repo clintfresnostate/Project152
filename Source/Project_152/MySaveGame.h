@@ -28,6 +28,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
 		TArray<FInventoryItemStruct> SaveModInventoryArray;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
+		int32 SaveUniqueItemID;
+
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
 
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
