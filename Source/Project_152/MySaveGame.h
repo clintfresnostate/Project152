@@ -25,6 +25,8 @@ public:
 		TArray<FInventoryItemStruct> SaveInvArray;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
 		TArray<FInventoryItemStruct> SaveCombatCharInvArray;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
+		TArray<FInventoryItemStruct> SaveModInventoryArray;
 
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
 

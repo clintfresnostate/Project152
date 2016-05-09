@@ -319,6 +319,7 @@ void AProject_152Character::SaveMainCharacter()
 	UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
 	SaveGameInstance->SaveInvArray = InventoryArray;
 	SaveGameInstance->SaveCombatCharInvArray = ParentCombatCharacterInventoryArray;
+	SaveGameInstance->SaveModInventoryArray = ModInventory;
 	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SaveSlotName, SaveGameInstance->UserIndex);
 }
 
@@ -354,4 +355,5 @@ void AProject_152Character::LoadMainCharacter()
 	LoadGameInstance = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
 	InventoryArray = LoadGameInstance->SaveInvArray;
 	ParentCombatCharacterInventoryArray = LoadGameInstance->SaveCombatCharInvArray;
+	ModInventory = LoadGameInstance->SaveModInventoryArray;
 }
