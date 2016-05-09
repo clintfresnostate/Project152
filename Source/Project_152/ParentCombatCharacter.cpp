@@ -619,9 +619,12 @@ void AParentCombatCharacter::GeneratePathways(int32 startGridNum, int32 destGrid
 {
 	// Use the graph A star search algorithm keeping track of the path cost (number of steps taken) with the
 	// heuristic where heuristic(location) = number of horizontal distance from destination + number of vertical distance from destination
-	if (CombatGrid->GridType[destGridNum] != 0)
-		return;
-
+	int32 MaxGrid = (CombatGridRef->GetMaxX()) * (CombatGridRef->GetMaxY());
+	if ((destGridNum <= MaxGrid) && (destGridNum >=0))
+	{
+		if (CombatGrid->GridType[destGridNum] != 0)
+			return;
+	}
 	// flush out previous pathway
 	PathwayPoints.Empty();
 
