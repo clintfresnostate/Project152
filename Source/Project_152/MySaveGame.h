@@ -15,13 +15,6 @@ class PROJECT_152_API UMySaveGame : public USaveGame
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
-		float locationX;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
-		float locationY;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
-		float locationZ;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
 		TArray<FInventoryItemStruct> SaveInvArray;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
 		TArray<FInventoryItemStruct> SaveCombatCharInvArray;
@@ -31,15 +24,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
 		int32 SaveUniqueItemID;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
-
-
-	/*
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
-		AProject_152Character* mainPlayer;
-		*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Basic)
+		int32 SaveCoin;
+	///////////////////////////////////////////////////////////////////////
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Basic)
 		FString SaveSlotName = "TEST";
