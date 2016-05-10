@@ -9,8 +9,9 @@ void AInventoryItem::UseItem(AProject_152Character* ItemOwner)
 	SetActorHiddenInGame(true);
 	SetActorEnableCollision(false);
 	ItemUsed(ItemOwner); // Call the blueprint event
-}
 
+
+}
 void AInventoryItem::SetSpeed()
 {
 	ItemInfo.Speed = ItemInfo.Speed + 1;
