@@ -1213,3 +1213,26 @@ TArray<int32> AParentCombatCharacter::getTilesWithin(int32 GridNum, int32 range,
 	}
 	return result;
 }
+
+void AParentCombatCharacter::FaceAttackTarget()
+{
+	int32 horizontalDistance = GetGridNum(AttackTargetLocation, WorldGridRef) / CombatGrid->GetMaxY() - GetGridNum(GetActorLocation(), WorldGridRef) / CombatGrid->GetMaxY();
+	int32 verticalDistance = GetGridNum(AttackTargetLocation, WorldGridRef) % CombatGrid->GetMaxY() - GetGridNum(GetActorLocation(), WorldGridRef) % CombatGrid->GetMaxY();
+
+	if (horizontalDistance == 0 && verticalDistance < 0)
+	{
+		FaceUp();
+	}
+	else if (horizontalDistance == 0 && verticalDistance > 0)
+	{
+		FaceDown();
+	}
+	else if (verticalDistance == 0 && horizontalDistance > 0)
+	{
+		FaceRight();
+	}
+	else // verticalDistance == 0 && horizontalDistance < 0
+	{
+		FaceLeft();
+	}
+}

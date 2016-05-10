@@ -242,6 +242,9 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		// Assume GridType = 2 -> Player Characters, GridType = 3 -> AI
 		UFUNCTION(BlueprintCallable, Category = Combat)
 			int32 DamageDoneAt(int32 targetGridNum);
+		// face the direction of the target
+		UFUNCTION(BlueprintCallable, Category = Combat)
+			void FaceAttackTarget();
 
 
 		/*  STATS  */
