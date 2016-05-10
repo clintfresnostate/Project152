@@ -5,6 +5,7 @@
 #include "Engine.h"
 #include "Project_152Character.h"
 #include "CombatGrid.h"
+#include "InventoryItem.h"
 #include "ParentCombatCharacter.h"
 
 AProject_152GameMode::AProject_152GameMode()
@@ -187,6 +188,7 @@ void AProject_152GameMode::CheckForLevelUP(FInventoryItemStruct ItemIn, int32 ar
 		{
 			//GEngine->AddOnScreenDebugMessage(0, 5.5f, FColor::Red, FString("AddingLevel"));
 			MyCharTemp->ParentCombatCharacterInventoryArray[arrayindex].Level++;
+			MyCharTemp->ParentCombatCharacterInventoryArray[arrayindex].StatPoints + 3;
 		}
 	}
 }

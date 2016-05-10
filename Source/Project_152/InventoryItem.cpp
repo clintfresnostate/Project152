@@ -36,4 +36,3 @@ void AInventoryItem::SetHealth()
 {
 	ItemInfo.Health = ItemInfo.Health + 25;
 }
-

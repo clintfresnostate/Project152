@@ -42,13 +42,13 @@ public:
 		int32 ItemSlotIndexHolder;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
+		int32 StatPoints;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
 		int32 Health;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
 		int32 Stamina;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
 		int32 Strength;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
 		int32 Speed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
@@ -57,6 +57,7 @@ public:
 		int32 Experience;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
 		int32 Level = 1;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
 		bool isParentCombatCharItem = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
