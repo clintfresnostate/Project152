@@ -188,7 +188,7 @@ void AProject_152GameMode::CheckForLevelUP(FInventoryItemStruct ItemIn, int32 ar
 		{
 			//GEngine->AddOnScreenDebugMessage(0, 5.5f, FColor::Red, FString("AddingLevel"));
 			MyCharTemp->ParentCombatCharacterInventoryArray[arrayindex].Level++;
-			MyCharTemp->ParentCombatCharacterInventoryArray[arrayindex].StatPoints + 3;
+			MyCharTemp->ParentCombatCharacterInventoryArray[arrayindex].StatPoints += 3;
 		}
 	}
 }
