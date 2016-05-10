@@ -11,7 +11,28 @@ void AInventoryItem::UseItem(AProject_152Character* ItemOwner)
 	ItemUsed(ItemOwner); // Call the blueprint event
 }
 
-void FInventoryItemStruct::SetSpeed()
+void AInventoryItem::SetSpeed()
 {
-	Strength = Strength + 1;
+	ItemInfo.Speed = ItemInfo.Speed + 1;
 }
+
+void AInventoryItem::SetInt()
+{
+	ItemInfo.Intelligence = ItemInfo.Intelligence + 1;
+}
+
+void AInventoryItem::SetStr()
+{
+	ItemInfo.Strength = ItemInfo.Strength + 1;
+}
+
+void AInventoryItem::SetStam()
+{
+	ItemInfo.Stamina = ItemInfo.Stamina + 1;
+}
+
+void AInventoryItem::SetHealth()
+{
+	ItemInfo.Health = ItemInfo.Health + 25;
+}
+

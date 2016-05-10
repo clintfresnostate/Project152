@@ -67,17 +67,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemInfo)
 		int32 ModStatIncrease;
 
-	UFUNCTION(BlueprintCallable, Category = ItemInfo)
-		void SetSpeed();
-	UFUNCTION(BlueprintCallable, Category = ItemInfo)
-		void SetInt();
-	UFUNCTION(BlueprintCallable, Category = ItemInfo)
-		void SetStr();
-	UFUNCTION(BlueprintCallable, Category = ItemInfo)
-		void SetStam();
-	UFUNCTION(BlueprintCallable, Category = ItemInfo)
-		void SetHealth();
-
 	bool operator==(FInventoryItemStruct const& Other) const
 	{
 
@@ -92,15 +81,11 @@ public:
 			return false;
 		}
 		return true;
-
 	}
 };
 /*
-
-
-
-
 */
+
 UCLASS(BlueprintType)
 class PROJECT_152_API AInventoryItem : public AStaticMeshActor
 {
@@ -109,6 +94,16 @@ class PROJECT_152_API AInventoryItem : public AStaticMeshActor
 
 public:
 
+	UFUNCTION(BlueprintCallable, Category = ItemInfo)
+		void SetSpeed();
+	UFUNCTION(BlueprintCallable, Category = ItemInfo)
+		void SetInt();
+	UFUNCTION(BlueprintCallable, Category = ItemInfo)
+		void SetStr();
+	UFUNCTION(BlueprintCallable, Category = ItemInfo)
+		void SetStam();
+	UFUNCTION(BlueprintCallable, Category = ItemInfo)
+		void SetHealth();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
 		FInventoryItemStruct ItemInfo;
@@ -126,8 +121,6 @@ public:
 		void ItemUsed(class AProject_152Character* ItemOwner);
 
 	void UseItem(AProject_152Character* ItemOwner);
-
-
 };
 
 
