@@ -1236,3 +1236,16 @@ void AParentCombatCharacter::FaceAttackTarget()
 		FaceLeft();
 	}
 }
+void AParentCombatCharacter::FaceAttackTargetLR()
+{
+	int32 horizontalDistance = GetGridNum(AttackTargetLocation, WorldGridRef) / CombatGrid->GetMaxY() - GetGridNum(GetActorLocation(), WorldGridRef) / CombatGrid->GetMaxY();
+
+	if (horizontalDistance > 0)
+	{
+		FaceRight();
+	}
+	else // verticalDistance == 0 && horizontalDistance < 0
+	{
+		FaceLeft();
+	}
+}

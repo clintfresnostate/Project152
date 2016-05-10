@@ -220,6 +220,8 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 			int32 TeamIndex = 0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 			int32 ItemId;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+			AInventoryItem ItemRef;
 		UFUNCTION(BlueprintCallable, Category = Combat)
 			bool CheckIfAIDead();
 		UFUNCTION(BlueprintCallable, Category = Combat)
@@ -245,6 +247,8 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		// face the direction of the target
 		UFUNCTION(BlueprintCallable, Category = Combat)
 			void FaceAttackTarget();
+		UFUNCTION(BlueprintCallable, Category = Combat)
+			void FaceAttackTargetLR();
 
 
 		/*  STATS  */
