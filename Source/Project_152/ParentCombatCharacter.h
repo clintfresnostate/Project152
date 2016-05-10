@@ -221,7 +221,7 @@ class PROJECT_152_API AParentCombatCharacter : public APaperCharacter
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 			int32 ItemId;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
-			AInventoryItem* ItemRef;
+			FInventoryItemStruct ItemRef;
 		UFUNCTION(BlueprintCallable, Category = Combat)
 			bool CheckIfAIDead();
 		UFUNCTION(BlueprintCallable, Category = Combat)
