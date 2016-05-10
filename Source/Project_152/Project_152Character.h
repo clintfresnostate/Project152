@@ -15,6 +15,7 @@
 //   The capsule component (inherited from ACharacter) handles collision with the world
 //   The CharacterMovementComponent (inherited from ACharacter) handles movement of the collision capsule
 //   The Sprite component (inherited from APaperCharacter) handles the visuals
+class APickupItem;
 class UTextRenderComponent;
 UCLASS(config=Game)
 class AProject_152Character : public APaperCharacter
@@ -127,9 +128,6 @@ public:
 		int32 Currency = 500;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
-		int32 GlobalUniqueID = 200;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 		bool bMouseCursorSpawned = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
@@ -165,4 +163,15 @@ public:
 
 	//UFUNCTION(BlueprintCallable, Catagory = LoadingSaving)
 		//void SaveLoadData(FArchive& Ar, FVector& SaveDataVector);
+
+	// A map for the player's backpack
+	TMap<FString, int> Backpack;
+	// The icons for the items in the backpack, lookup by string
+	TMap<FString, UTexture2D*> Icons;
+	// A flag alerting us the UI is showing
+	bool inventoryShowing;
+	// member function for letting the avatar have an item
+	void Pickup(APickupItem *item);
+	// ... rest of Avatar.h same as before	void ToggleInventory();
 };
+

@@ -160,6 +160,9 @@ void AProject_152Character::SetupPlayerInputComponent(class UInputComponent* Inp
 
 	InputComponent->BindTouch(IE_Pressed, this, &AProject_152Character::TouchStarted);
 	InputComponent->BindTouch(IE_Released, this, &AProject_152Character::TouchStopped);
+	InputComponent->BindAction("Vendor", IE_Pressed, this,
+		&AProject_152Character::ToggleInventory);
+	// rest of SetupPlayerInputComponent same as before
 }
 
 void AProject_152Character::MoveRight(float Value)
@@ -293,22 +296,73 @@ void AProject_152Character::SpawnMovementIndicators_Implementation()
 
 void AProject_152Character::SaveMainCharacter()
 {
+	/*
+	FBufferArchive ToBinary;
+	FVector PlayerLocation = (UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
+	SaveLoadData(ToBinary, PlayerLocation);
+	const FString FullFilePath = FPaths::ConvertRelativePathToFull(FPaths::GameSavedDir());
+
+	if (ToBinary.Num() <= 0) return false;
+
+	if (FFileHelper::SaveArrayToFile(ToBinary, *FullFilePath))
+	{
+		ToBinary.FlushCache();
+		ToBinary.Empty();
+
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Save success!");
+		return true;
+	}
+	ToBinary.FlushCache();
+	ToBinary.Empty();
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "File could not be saved!");
+
+	return false;
+	*/
 	UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
 	SaveGameInstance->SaveInvArray = InventoryArray;
 	SaveGameInstance->SaveCombatCharInvArray = ParentCombatCharacterInventoryArray;
-	SaveGameInstance->SaveModInventoryArray = ModInventory;
-	SaveGameInstance->SaveUniqueItemID = GlobalUniqueID;
-	SaveGameInstance->SaveCoin = Currency;
 	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SaveSlotName, SaveGameInstance->UserIndex);
 }
 
 void AProject_152Character::LoadMainCharacter()
 {
+	/*
+	const FString FullFilePath = FPaths::ConvertRelativePathToFull(FPaths::GameSavedDir());
+	TArray<uint8> TheBinaryArray;
+	FVector PlayerLocation = (UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
+	if (!FFileHelper::LoadFileToArray(TheBinaryArray, *FullFilePath))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Invalid File!");
+		return false;
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Loaded File Size");
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::FromInt(TheBinaryArray.Num()));
+
+	if (TheBinaryArray.Num() <= 0) return false;
+
+	FMemoryReader FromBinary = FMemoryReader(TheBinaryArray, true); //true, free data after done
+	FromBinary.Seek(0);
+	SaveLoadData(FromBinary, PlayerLocation);
+
+	FromBinary.FlushCache();
+
+	TheBinaryArray.Empty();
+	FromBinary.Close();
+
+	return true;
+	*/
 	UMySaveGame* LoadGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
 	LoadGameInstance = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->UserIndex));
 	InventoryArray = LoadGameInstance->SaveInvArray;
 	ParentCombatCharacterInventoryArray = LoadGameInstance->SaveCombatCharInvArray;
-	GlobalUniqueID = LoadGameInstance->SaveUniqueItemID;
-	Currency = LoadGameInstance->SaveCoin;
-	ModInventory = LoadGameInstance->SaveModInventoryArray;
+}
+
+void AProject_152Character::ToggleInventory()
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "Showing vendor…" );
+	}
 }

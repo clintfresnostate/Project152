@@ -1,39 +1,24 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Project_152.h"
-#include "Project_152Character.h"
 #include "NPC.h"
 
-
-
-bool ANPC::BuyItem(FInventoryItemStruct Item, int32 BuyPrice)
+ANPC::ANPC(const class FObjectInitializer& ObjectInitializer) :
+Super(ObjectInitializer)
 {
-	AProject_152Character* MyCharTemp;
-	MyCharTemp = Cast<AProject_152Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-
-	if (MyCharTemp->Currency > BuyPrice)
-	{
-		if (MyCharTemp->InventoryArray.Num() <= 15)
-		{
-			MyCharTemp->GiveItem(Item);
-			MyCharTemp->Currency -= BuyPrice;
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	else
-	{
-		return false;
-	}
+	ProxSphere = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this,
+		TEXT("Proximity Sphere"));
+	ProxSphere->AttachTo(RootComponent);
+	ProxSphere->SetSphereRadius(32.f);
+	// Code to make ANPC::Prox() run when this proximity sphere
+	// overlaps another actor.
+	ProxSphere->OnComponentBeginOverlap.AddDynamic(this, &ANPC::Prox_Implementation);
+	NpcMessage = "Shop";//default message, can be edited
+	// in blueprints
+	// This is where our code will go for what happens
+	// when there is an intersection
+	
 }
-void ANPC::SellItem(FInventoryItemStruct Item)
-{
-	AProject_152Character* MyCharTemp;
-	MyCharTemp = Cast<AProject_152Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
-	MyCharTemp->Currency += Item.SellPrice;
-	MyCharTemp->InventoryArray.Remove(Item);
-}
+
+
